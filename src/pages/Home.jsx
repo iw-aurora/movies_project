@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import sales from '../image/sales.png';
-import deal from '../image/deal.png'
+import sales from '../assets/images/sales.png';
+import deal from '../assets/images/deal.png'
 import { 
   fetchTrending, 
   fetchPopularMovies, 
@@ -9,13 +9,13 @@ import {
   fetchAnime,
   fetchFeaturedMovies,
   fetchUpcoming 
-} from '../service/Tmdb.js';
+} from '../lib/api/movies.js';
 
-import { GENRES } from '../service/Tmdb.js';
-import Header from '../components/home/Header';
+import { GENRES } from '../lib/api/genres.js';
+import Header from '../components/Header.jsx';
 import Hero from '../components/home/Hero';
 import MoviesRow from '../components/home/MoviesRow';
-import Footer from '../components/home/Footer';
+import Footer from '../components/Footer.jsx';
 import FeatureRow from '../components/home/FeatureRow.jsx';
 import Explore from '../components/home/Explore.jsx';
 
@@ -40,28 +40,40 @@ const Home = () => {
     const loadData = async () => {
       try {
         const [
-          trending,
-          popular,
-          featured,
-          nature,
-          comedy,
-          korean,
-          anime,
-          scifi,
-          horror,
-          upcoming, 
-        ] = await Promise.all([
-          fetchTrending(),
-          fetchPopularMovies(),
-          fetchFeaturedMovies(),
-          fetchByGenre(GENRES.DOCUMENTARY),
-          fetchByGenre(GENRES.COMEDY),
-          fetchByRegion(GENRES.KOREAN),
-          fetchAnime(),
-          fetchByGenre(GENRES.SCI_FI),
-          fetchByGenre(GENRES.HORROR),
-          fetchUpcoming(),
-        ]);
+            trendingRes,
+            popularRes,
+            featuredRes,
+            natureRes,
+            comedyRes,
+            koreanRes,
+            animeRes,
+            scifiRes,
+            horrorRes,
+            upcomingRes
+            ] = await Promise.all([
+            fetchTrending(),
+            fetchPopularMovies(),
+            fetchFeaturedMovies(),
+            fetchByGenre(GENRES.DOCUMENTARY),
+            fetchByGenre(GENRES.COMEDY),
+            fetchByRegion(GENRES.KOREAN),
+            fetchAnime(),
+            fetchByGenre(GENRES.SCI_FI),
+            fetchByGenre(GENRES.HORROR),
+            fetchUpcoming()
+            ]);
+
+            const trending = trendingRes.success ? trendingRes.data : { results: [] };
+            const popular = popularRes.success ? popularRes.data : { results: [] };
+            const featured = featuredRes.success ? featuredRes.data : { results: [] };
+            const nature = natureRes.success ? natureRes.data : { results: [] };
+            const comedy = comedyRes.success ? comedyRes.data : { results: [] };
+            const korean = koreanRes.success ? koreanRes.data : { results: [] };
+            const anime = animeRes.success ? animeRes.data : { results: [] };
+            const scifi = scifiRes.success ? scifiRes.data : { results: [] };
+            const horror = horrorRes.success ? horrorRes.data : { results: [] };
+            const upcoming = upcomingRes.success ? upcomingRes.data : { results: [] };
+
 
         if (trending?.results?.length > 0) {
           const randomIndex = Math.floor(Math.random() * trending.results.length);

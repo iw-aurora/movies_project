@@ -1,4 +1,4 @@
-import { getImageUrl } from '../../service/Tmdb';
+import { getImageUrl } from '../../lib/utils/image';
 
 const Hero = ({ movie }) => {
   if (!movie) {

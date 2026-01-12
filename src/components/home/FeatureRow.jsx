@@ -1,4 +1,4 @@
-import { getImageUrl } from '../../service/Tmdb';
+import { getImageUrl } from '../../lib/utils/image';
 
 const FeatureRow = ({ title, movies }) => {
   return (

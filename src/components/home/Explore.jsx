@@ -1,4 +1,4 @@
-import bg from '../../image/bg.png'
+import bg from '../../assets/images/bg.png'
 const Explore = () => {
   const categories = [
     { 
