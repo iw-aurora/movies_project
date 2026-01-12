@@ -3,7 +3,19 @@ import { BASE_URL } from './config';
 
 const client = axios.create({
   baseURL: BASE_URL,
-  timeout: 5000,
+  timeout: 10000,
+  headers: {
+    accept: 'application/json',
+    Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`
+  }
+});
+
+client.interceptors.request.use((config) => {
+  config.params = {
+    ...config.params,
+    language: 'vi-VN'
+  };
+  return config;
 });
 
 client.interceptors.response.use(
@@ -21,7 +33,5 @@ client.interceptors.response.use(
     };
   }
 );
-
-
 
 export default client;

@@ -13,7 +13,7 @@ const Hero = ({ movie }) => {
           alt={movie.title || movie.name}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-r from-black via-black/50 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-black/40"></div>
       </div>
 

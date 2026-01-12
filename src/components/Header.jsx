@@ -26,8 +26,8 @@ const Header = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 flex items-center justify-between ${
         isScrolled
-          ? 'bg-gradient-to-b from-black via-black/70 to-white'
-          : 'bg-gradient-to-r from-black/30 via-black/10 to-transparent'
+          ? 'bg-linear-to-b from-black via-black/70 to-white'
+          : 'bg-linear-to-r from-black/30 via-black/10 to-transparent'
       }`}
     >
       <div className="flex items-center gap-10">

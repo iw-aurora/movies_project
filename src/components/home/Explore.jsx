@@ -42,7 +42,7 @@ const Explore = () => {
               <div className="absolute top-1/2 right-1/3 w-12 h-12 bg-yellow-600/30 blur-2xl rounded-full"></div>
 
             
-              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] bg-size-[16px_16px]"></div>
 
               
               <div className={`absolute inset-0 ${cat.overlay}`}></div>
@@ -69,7 +69,7 @@ const Explore = () => {
             
     
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             </div>
           </div>
         ))}
