@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
-import Home from './pages/home'
+import Home from './pages/Home'
 import Introduce from './pages/Introduce'
 import NotFound from './components/NotFound'
 
