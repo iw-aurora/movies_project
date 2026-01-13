@@ -3,8 +3,9 @@ import { IMAGE_BASE_URL } from '../../config/config';
 export const getImageUrl = (path, size = 'w500') => {
   return path
     ? `${IMAGE_BASE_URL}${size}${path}`
-    : 'https://via.placeholder.com/500x750?text=No+Image';
+    : 'https://static.toiimg.com/thumb/msid-123564632,imgsize-51528,width-400,resizemode-4/release-of-balakrishnas-akhanda-2-thandaavam-postponed.jpg';
 };
+
 
 export const getPoster = (path, size = 'w500') => getImageUrl(path, size);
 
