@@ -1,10 +1,12 @@
 import { getImageUrl } from '../../lib/utils/image';
+import { formatRating } from '../../lib/utils/format';
+import { Link } from 'react-router-dom';
 
 const MoviesCard = ({ movie, layout = 'POSTER' }) => {
   const isPoster = layout === 'POSTER';
   
   return (
-    <div className="relative group cursor-pointer transition-transform duration-300 hover:scale-105 z-0 hover:z-10">
+    <Link to={`/title/${movie.id}`} className="relative group cursor-pointer transition-transform duration-300 hover:scale-105 z-0 hover:z-10">
       <div className={`overflow-hidden rounded-md bg-zinc-900 shadow-md ${isPoster ? 'aspect-[2/3]' : 'aspect-video'}`}>
         <img 
           src={isPoster ? getImageUrl(movie.poster_path) : getImageUrl(movie.backdrop_path)} 
@@ -19,12 +21,12 @@ const MoviesCard = ({ movie, layout = 'POSTER' }) => {
         <div className="flex items-center gap-2 mt-1">
           <span className="text-xs text-yellow-400 font-bold">
             <i className="fa-solid fa-star mr-1"></i>
-            {movie.vote_average.toFixed(1)}
+            {formatRating(movie.vote_average)}
           </span>
           <span className="text-[10px] text-gray-300 uppercase px-1 border border-gray-500 rounded">HD</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -31,7 +31,6 @@ const MoviesRow = ({
         </h2>
       </div>
 
-      {/* ❌ KHÔNG SLIDER → GRID */}
       {!scrollable ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 px-6">
           {movies.map((movie) => (
@@ -39,7 +38,7 @@ const MoviesRow = ({
           ))}
         </div>
       ) : (
-        /* ✅ SLIDER */
+        
         <div className="relative group/row">
           <button
             onClick={() => scroll('left')}
