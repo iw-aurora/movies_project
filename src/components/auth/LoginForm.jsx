@@ -18,7 +18,6 @@ const LoginForm = ({ onLogin, loading, onGoogleSignIn, googleLoading, error, cle
 
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-black overflow-hidden">
-      {/* BACKGROUND */}
       <div className="absolute inset-0 opacity-40">
         <div className="grid grid-cols-4 md:grid-cols-6 gap-4 p-4 transform rotate-12 scale-125">
           {Array.from({ length: 24 }).map((_, i) => (
@@ -38,7 +37,6 @@ const LoginForm = ({ onLogin, loading, onGoogleSignIn, googleLoading, error, cle
 
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/60" />
 
-      {/* CARD */}
       <div className="relative z-10 w-full max-w-md bg-black/80 backdrop-blur-md border border-white/10 p-8 md:p-12 rounded-2xl shadow-2xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">Welcome Back</h1>
@@ -49,7 +47,7 @@ const LoginForm = ({ onLogin, loading, onGoogleSignIn, googleLoading, error, cle
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* EMAIL */}
+          {/* email */}
           <div className="space-y-2">
             <label className="text-sm font-semibold">Email</label>
             <input
@@ -61,7 +59,7 @@ const LoginForm = ({ onLogin, loading, onGoogleSignIn, googleLoading, error, cle
             />
           </div>
 
-          {/* PASSWORD */}
+          {/* password */}
           <div className="space-y-2">
             <label className="text-sm font-semibold">Password</label>
             <div className="relative">
@@ -82,14 +80,12 @@ const LoginForm = ({ onLogin, loading, onGoogleSignIn, googleLoading, error, cle
             </div>
           </div>
 
-          {/* Inline error */}
           {error && (
             <div className="text-center">
               <p className="text-sm text-red-400">{error}</p>
             </div>
           )}
 
-          {/* SUBMIT */}
           <button
             type="submit"
             disabled={loading}
