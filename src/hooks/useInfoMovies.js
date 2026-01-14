@@ -26,16 +26,24 @@ export const useInfoMovies = (movieId) => {
           getSimilarMovies(movieId)
         ]);
 
-        if (!detailResp.success || !creditsResp.success) {
-          setError('Không tải được dữ liệu phim');
+        if (!detailResp.success) {
+          if (detailResp.status === 404) {
+            setError('Không tìm thấy phim (404)');
+          } else {
+            setError('Không tải được dữ liệu phim');
+          }
           setLoading(false);
           return;
         }
+        if (!creditsResp.success) {
+          console.warn('Credits request failed', creditsResp);
+          // still continue with available data if main detail exists
+        }
 
         const detail = detailResp.data;
-        const credits = creditsResp.data;
-        const videos = videosResp.data;
-        const similar = similarResp.data;
+        const credits = creditsResp.data || { cast: [], crew: [] };
+        const videos = videosResp.data || { results: [] };
+        const similar = similarResp.data || { results: [] };
 
         const director = credits.crew.find(p => p.job === 'Director');
 

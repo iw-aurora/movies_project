@@ -1,4 +1,3 @@
-import React from "react";
 
 export const MovieCardSkeleton = ({ layout = "POSTER" }) => {
   const isPoster = layout === "POSTER";

@@ -25,11 +25,20 @@ client.interceptors.response.use(
     error: null
   }),
   error => {
-    console.error('API error:', error.message);
+    const status = error?.response?.status;
+    const data = error?.response?.data;
+    console.error('API error:', {
+      message: error.message,
+      status,
+      data
+    });
+
     return {
       success: false,
       data: null,
-      error: error.message || 'Unknown error'
+      error: error.message || 'Unknown error',
+      status,
+      body: data
     };
   }
 );

@@ -1,5 +1,8 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAuth } from "../../Context/AuthContext";
+import { logout } from "../../firebase/AuthService";
+import Swal from 'sweetalert2';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -58,12 +61,50 @@ const Header = () => {
         <button className="hidden sm:block text-gray-400 hover:text-white transition-colors text-lg">
           <i className="fa-solid fa-magnifying-glass"></i>
         </button>
-        <Link
-          to="/auth/login"
-          className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-blue-500 hover:text-white transition-all shadow-lg active:scale-95"
-        >
-          Đăng nhập
-        </Link>
+        {/* show login link when no user, otherwise show avatar + logout */}
+        {(() => {
+          const { user } = useAuth();
+          const navigate = useNavigate();
+          const handleLogout = async () => {
+            const result = await Swal.fire({
+              title: 'Bạn có chắc chắn muốn đăng xuất không?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Đăng xuất',
+              cancelButtonText: 'Hủy',
+              reverseButtons: true,
+            });
+            if (!result.isConfirmed) return;
+            try {
+              await logout();
+              await Swal.fire({ title: 'Đã đăng xuất', icon: 'success', timer: 1200, showConfirmButton: false });
+              navigate('/', { replace: true });
+            } catch (err) {
+              console.error('Logout error', err);
+              Swal.fire({ title: 'Lỗi', text: 'Đăng xuất thất bại', icon: 'error' });
+            }
+          };
+
+          return user ? (
+            <div className="flex items-center gap-3">
+              {user.photoURL ? (
+                <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm font-semibold">{(user.displayName || 'U')[0]}</div>
+              )}
+              <button onClick={handleLogout} className="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-red-500 hover:text-white transition-all shadow-lg active:scale-95">
+                Đăng xuất
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/auth/login"
+              className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-blue-500 hover:text-white transition-all shadow-lg active:scale-95"
+            >
+              Đăng nhập
+            </Link>
+          );
+        })()}
       </div>
     </header>
   );

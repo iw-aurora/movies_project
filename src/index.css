@@ -62,3 +62,72 @@ body {
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500;
 }
+
+/* SweetAlert2 Dark Netflix-style */
+.swal2-popup {
+  background: linear-gradient(180deg, #0f0f0f, #141414) !important;
+  color: #fff !important;
+  border-radius: 20px !important;
+  padding: 2rem !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8) !important;
+}
+
+.swal2-title {
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.5px;
+}
+
+.swal2-html-container {
+  color: #cbd5f5 !important;
+  font-size: 0.95rem;
+}
+
+.swal2-confirm {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  border-radius: 999px !important;
+  padding: 0.6rem 1.8rem !important;
+  font-weight: 700 !important;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+}
+
+.swal2-cancel {
+  background: #1f2933 !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  padding: 0.6rem 1.6rem !important;
+}
+
+.swal2-icon {
+  transform: scale(0.9);
+}
+
+.swal2-backdrop-show {
+  backdrop-filter: blur(6px);
+}
+
+/* Ensure popup sits above app and buttons are clickable */
+.swal2-container {
+  z-index: 2147483000 !important; /* near max to beat other overlays */
+  position: fixed !important;
+}
+.swal2-backdrop {
+  z-index: 2147482999 !important;
+  pointer-events: auto !important;
+}
+.swal2-popup {
+  pointer-events: auto !important;
+  z-index: 2147483001 !important;
+}
+.swal2-confirm,
+.swal2-cancel,
+.swal2-close {
+  pointer-events: auto !important;
+  z-index: 2147484000 !important;
+}
+/* make close (X) visible and clickable */
+.swal2-close {
+  color: #fff !important;
+  opacity: 0.95 !important;
+}
+
