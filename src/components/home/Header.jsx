@@ -63,7 +63,7 @@ const Header = () => {
         </button>
         {/* show login link when no user, otherwise show avatar + logout */}
         {(() => {
-          const { user } = useAuth();
+          const { user, role } = useAuth();
           const navigate = useNavigate();
           const handleLogout = async () => {
             const result = await Swal.fire({
@@ -85,13 +85,30 @@ const Header = () => {
             }
           };
 
-          return user ? (
-            <div className="flex items-center gap-3">
+          const isAdmin = role === 'admin' || user?.email === 'admin@gmail.com';
+
+          const AvatarContent = () => (
+            <>
               {user.photoURL ? (
                 <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm font-semibold">{(user.displayName || 'U')[0]}</div>
               )}
+            </>
+          );
+
+          return user ? (
+            <div className="flex items-center gap-3">
+              {isAdmin ? (
+                <Link to="/admin" className="cursor-pointer hover:opacity-80 transition-opacity" title="Go to Admin Dashboard">
+                  <AvatarContent />
+                </Link>
+              ) : (
+                 <Link to="/user" className="cursor-default">
+                   <AvatarContent />
+                 </Link>
+              )}
+              
               <button onClick={handleLogout} className="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-red-500 hover:text-white transition-all shadow-lg active:scale-95">
                 Đăng xuất
               </button>

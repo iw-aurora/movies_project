@@ -9,8 +9,10 @@ import LoginPage from "./pages/Login"
 import RegisterPage from "./pages/Register"
 import NotAllowed from "./pages/NotAllowed"
 import NotFound from "./NotFound"
-
+import Admin from "./pages/Admin"
 import PrivateRoute from "./Routes/PrivateRoute"
+import AdminRoute from "./Routes/AdminRoute"
+import User from "./pages/User"
 
 function App() {
   return (
@@ -21,7 +23,7 @@ function App() {
         {/* PUBLIC */}
         <Route index element={<Home />} />
         <Route path="introduce" element={<Introduce />} />
-
+        
         {/* PRIVATE */}
         <Route element={<PrivateRoute />}>
           <Route path="title/:id" element={<TitlePage />} />
@@ -33,7 +35,16 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
       </Route>
-
+      
+      {/* USER PROFILE - Protected (with own Header) */}
+      <Route element={<PrivateRoute />}>
+        <Route path="/user" element={<User />} />
+      </Route>
+      
+      {/* ADMIN - Protected */}
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<Admin />} />
+      </Route>
       {/* 403 */}
       <Route path="/notallowed" element={<NotAllowed />} />
 

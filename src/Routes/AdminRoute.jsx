@@ -1,12 +1,17 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 
-const AdminRoute = ({ allowedRoles = ["admin"], redirectTo = "/auth/login" }) => {
+const AdminRoute = () => {
   const { user, role, loading } = useAuth();
 
-  if (loading) return <p>Loading...</p>;
-  if (!user) return <Navigate to={redirectTo} replace />;
-  if (!allowedRoles.includes(role)) return <Navigate to="/notallowed" replace />;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-black text-white">Loading...</div>;
+  
+  // Check if user is logged in AND has admin role (or specific email)
+  const isAdmin = role === 'admin' || user?.email === 'admin@gmail.com';
+  
+  if (!user || !isAdmin) {
+    return <Navigate to="/notallowed" state={{ role }} replace />;
+  }
 
   return <Outlet />;
 };
