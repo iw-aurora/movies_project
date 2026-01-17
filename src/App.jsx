@@ -13,6 +13,8 @@ import Admin from "./pages/Admin"
 import PrivateRoute from "./Routes/PrivateRoute"
 import AdminRoute from "./Routes/AdminRoute"
 import User from "./pages/User"
+import Contact from "./pages/Contact"
+import WatchPage from "./pages/WatchPage"
 
 function App() {
   return (
@@ -23,10 +25,11 @@ function App() {
         {/* PUBLIC */}
         <Route index element={<Home />} />
         <Route path="introduce" element={<Introduce />} />
-        
+        <Route path="contact" element={<Contact />} />
         {/* PRIVATE */}
         <Route element={<PrivateRoute />}>
           <Route path="title/:id" element={<TitlePage />} />
+          <Route path="watch/:id" element={<WatchPage />} />
         </Route>
       </Route>
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Clock, Star, Share2, Check, Play } from "lucide-react";
 import { getPoster, getBackdrop } from "../../lib/utils/image";
+import { Link } from "react-router-dom";
 
 const Info = ({ movie }) => {
   if (!movie) return null;
@@ -34,11 +35,11 @@ const Info = ({ movie }) => {
             <div className="absolute inset-0 ring-1 ring-inset ring-white/20 rounded-3xl" />
           </div>
 
-          <button className="w-full mt-10 bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl flex items-center justify-center space-x-3 transition-all shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_15px_40px_rgba(37,99,235,0.6)] active:scale-95 group/btn overflow-hidden relative">
+          <Link to={`/watch/${movie.id}`} className="w-full mt-10 bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl flex items-center justify-center space-x-3 transition-all shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_15px_40px_rgba(37,99,235,0.6)] active:scale-95 group/btn overflow-hidden relative">
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
             <Play fill="currentColor" size={28} className="relative z-10" />
             <span className="text-xl uppercase tracking-widest relative z-10">Xem phim ngay</span>
-          </button>
+          </Link>
         </div>
 
         {/* Info Content */}

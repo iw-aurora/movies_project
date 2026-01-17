@@ -72,3 +72,20 @@ export const updateUserStatus = async (userId, newStatus) => {
 export const createUserProfile = async (userId, userData) => {
     await setDoc(doc(db, "users", userId), userData);
 };
+
+// Import storage functions needed
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "./firebaseConfig";
+
+/**
+ * Upload avatar user lên Firebase Storage
+ * @param {string} userId 
+ * @param {File} file 
+ * @returns {Promise<string>} Download URL
+ */
+export const uploadUserAvatar = async (userId, file) => {
+    const storageRef = ref(storage, `avatars/${userId}/${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snapshot.ref);
+    return url;
+};

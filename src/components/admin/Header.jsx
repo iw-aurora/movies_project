@@ -71,7 +71,7 @@ const Header = () => {
       {/* CENTER – MENU */}
       <div className="flex justify-center">
         <Link
-          to="/admin"
+          to=""
           className="relative text-sm font-semibold tracking-wide text-gray-300 hover:text-white transition group"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >

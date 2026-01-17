@@ -1,4 +1,5 @@
 import { getImageUrl } from "../../lib/utils/image";
+import { Link } from "react-router-dom";
 
 const Hero = ({ movie }) => {
   if (!movie) {
@@ -34,14 +35,14 @@ const Hero = ({ movie }) => {
           <p className="text-lg text-gray-300 line-clamp-3 drop-shadow-md font-medium max-w-xl leading-relaxed">{movie.overview}</p>
 
           <div className="flex items-center gap-4 pt-4">
-            <button className="bg-white text-black px-8 py-4 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-3 shadow-2xl active:scale-95 text-lg">
+            <Link to={`/watch/${movie.id}`} className="bg-white text-black px-8 py-4 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-3 shadow-2xl active:scale-95 text-lg">
               <i className="fa-solid fa-play"></i>
               Xem ngay
-            </button>
-            <button className="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-3 border border-white/10 active:scale-95 text-lg">
+            </Link>
+            <Link to={`/title/${movie.id}`} className="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-3 border border-white/10 active:scale-95 text-lg">
               <i className="fa-solid fa-circle-info"></i>
               Chi tiết
-            </button>
+            </Link>
           </div>
         </div>
       </div>
