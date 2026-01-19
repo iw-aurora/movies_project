@@ -21,7 +21,7 @@ const Introduce = () => {
   if (loading || !sections) {
     return (
       <div className="min-h-screen bg-[#111112] px-4">
-        <section className="max-w-7xl mx-auto pt-32 mb-16 space-y-4">
+        <section className="container mx-auto pt-32 mb-16 space-y-4">
           <div className="w-64 h-12 animate-shimmer rounded-lg"></div>
           <div className="w-full h-32 animate-shimmer rounded-xl"></div>
         </section>
@@ -38,7 +38,7 @@ const Introduce = () => {
   return (
     <div className="min-h-screen bg-[#111112] text-zinc-100">
       <main>
-        <section className="max-w-7xl mx-auto px-6 pt-32 mb-16">
+        <section className="container mx-auto px-6 pt-32 mb-16">
           <div className="flex items-center gap-3 mb-6">
             <span className="w-1.5 h-8 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.6)]"></span>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase italic">Về MoonPlay</h1>
@@ -56,7 +56,7 @@ const Introduce = () => {
             <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="BACKDROP" scrollable={false} />
           </section>
 
-          <section className="max-w-7xl mx-auto px-6">
+          <section className="container mx-auto px-6">
             <div className="bg-zinc-900/50 p-10 rounded-3xl border border-white/5 backdrop-blur-sm">
               <p className="text-zinc-300 text-lg font-medium leading-relaxed text-justify">
                 MoonPlay là nền tảng xem phim trực tuyến được thiết kế tối giản nhưng hiệu quả, giúp người dùng dễ dàng tìm kiếm và tận hưởng những bộ
@@ -70,7 +70,7 @@ const Introduce = () => {
             <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" />
           </section>
 
-          <section className="max-w-7xl mx-auto px-6">
+          <section className="container mx-auto px-6">
             <div className="bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 backdrop-blur-sm">
               <p className="text-zinc-300 text-lg font-medium leading-relaxed text-justify">
                 Không chỉ tập trung vào những tác phẩm nổi tiếng, MoonPlay còn giới thiệu các bộ phim độc đáo đến từ nhiều quốc gia và nền văn hoá

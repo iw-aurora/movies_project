@@ -15,6 +15,9 @@ import AdminRoute from "./Routes/AdminRoute"
 import User from "./pages/User"
 import Contact from "./pages/Contact"
 import WatchPage from "./pages/WatchPage"
+import MoviePage from "./pages/MoviePage"
+import StorePage from "./pages/Storepage"
+import SeriesPage from "./pages/SeriesPage"
 
 function App() {
   return (
@@ -25,11 +28,18 @@ function App() {
         {/* PUBLIC */}
         <Route index element={<Home />} />
         <Route path="introduce" element={<Introduce />} />
-        <Route path="contact" element={<Contact />} />
         {/* PRIVATE */}
         <Route element={<PrivateRoute />}>
           <Route path="title/:id" element={<TitlePage />} />
           <Route path="watch/:id" element={<WatchPage />} />
+          <Route path="/user" element={<User />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<Admin />} />
+          </Route>
+          <Route path="contact" element={<Contact />} />
+          <Route path="movie" element={<MoviePage />} />
+          <Route path="store" element={<StorePage />} />
+          <Route path="series" element={<SeriesPage />} />
         </Route>
       </Route>
 
@@ -39,15 +49,6 @@ function App() {
         <Route path="register" element={<RegisterPage />} />
       </Route>
       
-      {/* USER PROFILE - Protected (with own Header) */}
-      <Route element={<PrivateRoute />}>
-        <Route path="/user" element={<User />} />
-      </Route>
-      
-      {/* ADMIN - Protected */}
-      <Route element={<AdminRoute />}>
-        <Route path="/admin" element={<Admin />} />
-      </Route>
       {/* 403 */}
       <Route path="/notallowed" element={<NotAllowed />} />
 

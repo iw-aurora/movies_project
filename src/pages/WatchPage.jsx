@@ -30,13 +30,24 @@ const WatchPage = () => {
           setMovie(detailResp.data);
         }
 
-        if (videosResp.success) {
-           const trailer = videosResp.data.results.find(v => v.site === 'YouTube' && v.type === 'Trailer');
-           if (trailer) {
-             setTrailerUrl(`https://www.youtube.com/embed/${trailer.key}`);
+        if (videosResp.success && videosResp.data.results?.length > 0) {
+           const videos = videosResp.data.results.filter(v => v.site === 'YouTube');
+           
+           // Priority order: Official Trailer → Any Trailer → Teaser → Any video
+           const video = 
+             videos.find(v => v.type === 'Trailer' && v.official) ||  // Official trailer
+             videos.find(v => v.type === 'Trailer') ||                 // Any trailer
+             videos.find(v => v.type === 'Teaser') ||                  // Teaser
+             videos.find(v => v.type === 'Clip') ||                    // Clip
+             videos[0];                                                 // First available video
+           
+           if (video) {
+             setTrailerUrl(`https://www.youtube.com/embed/${video.key}`);
            } else {
              setTrailerUrl(null);
            }
+        } else {
+          setTrailerUrl(null);
         }
 
         if (similarResp.success) {
@@ -76,7 +87,7 @@ const WatchPage = () => {
       {/* Spacer for fixed header */}
       <div className="h-20 md:h-24"></div>
 
-      <main className="flex-1 px-4 md:px-12 py-8 max-w-[1600px] mx-auto w-full">
+      <main className="flex-1 px-4 md:px-12 py-8 container mx-auto w-full">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-[10px] md:text-xs text-gray-600 mb-8 font-black uppercase tracking-widest">
           <Link to="/" className="hover:text-blue-500 transition-colors">

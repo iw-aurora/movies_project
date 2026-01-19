@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Star,
   ThumbsUp,
@@ -28,7 +29,9 @@ import {
   updateDoc,
   increment,
   setDoc,
-  getDoc
+  getDoc,
+  arrayUnion,
+  arrayRemove
 } from 'firebase/firestore';
 import { useAuth } from '../../Context/AuthContext';
 import Swal from 'sweetalert2';
@@ -46,17 +49,15 @@ const MovieInfo = ({ movie }) => {
   const [visibleCommentsCount, setVisibleCommentsCount] = useState(5);
   const [activeServer, setActiveServer] = useState('Server VIP');
   
-  // New States
   const [isFavorite, setIsFavorite] = useState(false);
-  const [replyingTo, setReplyingTo] = useState(null); // commentId
+  const [replyingTo, setReplyingTo] = useState(null); 
   const [replyText, setReplyText] = useState('');
+  const { hash } = useLocation();
 
-  // 1. Initial Data Fetching (Comments & Favorite Status)
+
   useEffect(() => {
     if (!movie?.id) return;
     const mid = movie.id.toString();
-
-    // Fetch Favorite Status
     if (user) {
       const checkFavorite = async () => {
         try {
@@ -73,8 +74,6 @@ const MovieInfo = ({ movie }) => {
     } else {
         setIsFavorite(false);
     }
-
-    // Fetch Comments
     const q = query(collection(db, 'movie_comments'), where('movieId', '==', mid));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const commentsData = snapshot.docs.map(doc => ({
@@ -87,17 +86,13 @@ const MovieInfo = ({ movie }) => {
       console.error("Firestore Error: ", error);
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, [movie?.id, user]);
 
-  // 2. Stats Calculation
   const statsSummary = useMemo(() => {
     const tmdbRating = movie.vote_average || 0;
     const tmdbCount = movie.vote_count || 0;
     const userCount = comments.length;
-    
-    // User data override if available, else TMDB
     if (userCount === 0) {
       const average = (tmdbRating / 2).toFixed(1);
       const breakdown = [5, 4, 3, 2, 1].map(stars => {
@@ -126,7 +121,6 @@ const MovieInfo = ({ movie }) => {
     return { total: userCount, average, breakdown, isTMDB: false };
   }, [comments, movie]);
 
-  // 3. Sorting Logic
   const sortedComments = useMemo(() => {
     const list = [...comments].sort((a, b) => {
       const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : Date.now();
@@ -142,11 +136,33 @@ const MovieInfo = ({ movie }) => {
     return list;
   }, [comments, activeSort]);
 
-  // 4. Handlers
+  useEffect(() => {
+    if (!loading && hash && sortedComments.length > 0) {
+      const commentId = hash.replace('#comment-', '');
+      const commentIndex = sortedComments.findIndex(c => c.id === commentId);
+      
+      if (commentIndex !== -1) {
+        if (visibleCommentsCount <= commentIndex) {
+            setVisibleCommentsCount(commentIndex + 5);
+        }
+        setTimeout(() => {
+            const element = document.getElementById(`comment-${commentId}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.style.transition = 'background-color 0.5s ease';
+                element.style.backgroundColor = 'rgba(37, 99, 235, 0.15)'; 
+                setTimeout(() => {
+                   element.style.backgroundColor = '';
+                }, 2000);
+            }
+        }, 300);
+      }
+    }
+  }, [loading, hash, sortedComments, visibleCommentsCount]);
+
   const toggleFavorite = async () => {
     if (!user) return Swal.fire('Yêu cầu đăng nhập', 'Bạn cần đăng nhập để thêm vào yêu thích', 'warning');
     
-    // Optimistic UI Update for instant feedback
     const wasFavorite = isFavorite;
     setIsFavorite(!wasFavorite); 
 
@@ -155,7 +171,6 @@ const MovieInfo = ({ movie }) => {
 
     try {
       if (wasFavorite) {
-        // Remove from list
         await deleteDoc(docRef);
         Swal.fire({
             icon: 'success', title: 'Đã xóa', text: 'Đã xóa khỏi danh sách yêu thích',
@@ -163,7 +178,6 @@ const MovieInfo = ({ movie }) => {
             background: '#1a1a1a', color: '#fff'
         });
       } else {
-        // Add to list
         await setDoc(docRef, {
             id: mid,
             title: movie.title || movie.name,
@@ -179,7 +193,7 @@ const MovieInfo = ({ movie }) => {
       }
     } catch (error) {
       console.error("Favorite Error:", error);
-      setIsFavorite(wasFavorite); // Revert state on error
+      setIsFavorite(wasFavorite); 
       Swal.fire('Lỗi', 'Có lỗi xảy ra khi cập nhật danh sách yêu thích', 'error');
     }
   };
@@ -194,8 +208,6 @@ const MovieInfo = ({ movie }) => {
       const mid = movie.id.toString();
       const rating = userRating || 5;
 
-      // Ensure we have a valid name. Priority: Auth DisplayName > Email > 'User'
-      // Note: In a real app, you might want to fetch the latest profile from 'users' collection too.
       const displayUserName = user.displayName || user.email?.split('@')[0] || 'User';
 
       await addDoc(collection(db, 'movie_comments'), {
@@ -204,12 +216,15 @@ const MovieInfo = ({ movie }) => {
         userName: displayUserName, 
         userAvatar: user.photoURL || `https://ui-avatars.com/api/?name=${displayUserName}&background=random`,
         text: commentText,
+        content: commentText, 
         rating: rating,
+        movieTitle: movie.title || movie.name || 'Unknown',
+        moviePoster: movie.poster_path || '',
         hasSpoiler: containsSpoilers,
         likes: 0,
         dislikes: 0,
         userVotes: {},
-        replies: [], // New field for replies
+        replies: [], 
         createdAt: serverTimestamp()
       });
 
@@ -238,25 +253,15 @@ const MovieInfo = ({ movie }) => {
       const displayUserName = user.displayName || user.email?.split('@')[0] || 'User';
 
       const newReply = {
-          id: Date.now().toString(), // Simple ID
+          id: Date.now().toString(), 
           userId: user.uid,
           userName: displayUserName,
           userAvatar: user.photoURL || `https://ui-avatars.com/api/?name=${displayUserName}&background=random`,
           text: replyText,
-          createdAt: new Date().toISOString() // Store as ISO string for simplicity in array
+          createdAt: new Date().toISOString()
       };
 
       try {
-          // Use arrayUnion to append to the 'replies' array field
-          await updateDoc(commentRef, {
-              replies: increment(0) // Trick to ensure field exists if needed, but actually we use arrayUnion
-          }).catch(() => {}); // Ignore if doc doesn't exist
-
-          // We actually need to read the doc, get current replies, and append, OR use arrayUnion
-          // arrayUnion is cleaner but doesn't support serverTimestamp well inside objects in arrays.
-          // Let's use get/update for safety or arrayUnion with ISO string timestamp.
-          const { arrayUnion } = await import('firebase/firestore'); // dynamic import or just use from top
-          
           await updateDoc(commentRef, {
               replies: arrayUnion(newReply)
           });
@@ -314,6 +319,38 @@ const MovieInfo = ({ movie }) => {
 
     if (result.isConfirmed) {
       await deleteDoc(doc(db, 'movie_comments', commentId));
+    }
+  };
+
+  const handleDeleteReply = async (commentId, replyToDelete) => {
+    if (!user) return;
+    const result = await Swal.fire({
+      title: 'Xóa trả lời?',
+      text: "Hành động này không thể hoàn tác!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy',
+      background: '#1a1a1a', color: '#fff'
+    });
+
+    if (result.isConfirmed) {
+      try {
+          const commentRef = doc(db, 'movie_comments', commentId);
+          await updateDoc(commentRef, {
+              replies: arrayRemove(replyToDelete)
+          });
+          Swal.fire({
+            icon: 'success', title: 'Đã xóa', 
+            toast: true, position: 'top-end', showConfirmButton: false, timer: 1500,
+            background: '#1a1a1a', color: '#fff'
+          });
+      } catch (error) {
+          console.error("Error deleting reply:", error);
+          Swal.fire('Lỗi', 'Không thể xóa câu trả lời', 'error');
+      }
     }
   };
 
@@ -432,280 +469,233 @@ const MovieInfo = ({ movie }) => {
         </div>
       </section>
 
-      {/* Ratings & Comment Form Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 mb-2">
-             <BarChart3 className="text-blue-500" size={24} />
-             <h2 className="text-xl font-black text-white uppercase italic tracking-tighter">Đánh giá chung</h2>
-          </div>
-          
-          <div className="bg-[#0c0c0c] border border-white/5 rounded-3xl p-8 space-y-6">
-            <div className="text-center">
-              <div className="text-5xl font-black text-white mb-2">{statsSummary.average}</div>
-              <div className="flex justify-center gap-1 text-yellow-500 mb-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={16} fill={i < Math.round(Number(statsSummary.average)) ? "currentColor" : "none"} />
-                ))}
-              </div>
-              <div className="text-[10px] text-gray-600 font-black uppercase tracking-widest">{statsSummary.total} nhận xét</div>
-              {statsSummary.isTMDB && (
-                <div className="mt-3 py-1 px-3 bg-blue-600/10 border border-blue-500/20 rounded-full inline-block">
-                   <span className="text-[8px] text-blue-500 font-black uppercase tracking-tighter">Dữ liệu từ TMDB</span>
-                </div>
-              )}
-            </div>
+      {/* Ratings & Reviews Section - Redesigned */}
+      <div className="max-w-5xl mx-auto space-y-10">
+         
+         <div className="flex items-center gap-4 mb-2 pb-4 border-b border-white/5">
+             <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Bình luận & Đánh giá</h2>
+             <span className="text-sm text-gray-500 font-medium">(Audience Reviews)</span>
+         </div>
 
-            <div className="space-y-3">
-              {statsSummary.breakdown.map((item) => (
-                <div key={item.stars} className="flex items-center gap-4">
-                  <div className="flex items-center gap-1.5 w-8">
-                    <span className="text-xs font-black text-gray-400">{item.stars}</span>
-                    <Star size={10} className="text-gray-600" />
-                  </div>
-                  <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-blue-600 rounded-full transition-all duration-1000"
-                      style={{ width: `${item.percentage}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-[10px] font-black text-gray-600 w-8 text-right">{item.percentage}%</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center gap-3 mb-2">
-             <MessageSquare className="text-blue-500" size={24} />
-             <h2 className="text-xl font-black text-white uppercase italic tracking-tighter">Để lại bình luận</h2>
-          </div>
-
-          <form onSubmit={handleSubmitComment} className="bg-[#0c0c0c] border border-white/5 rounded-3xl p-8 space-y-6">
-            <div className="flex flex-col md:flex-row gap-8">
-              <div className="space-y-4 flex-1">
-                <div className="flex items-center gap-4">
-                  <span className="text-[10px] text-gray-600 font-black uppercase tracking-widest">Đánh giá của bạn:</span>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setUserRating(star)}
-                        className={`transition-all ${userRating >= star ? 'text-yellow-500 scale-110' : 'text-gray-800 hover:text-gray-600'}`}
-                      >
-                        <Star size={24} fill={userRating >= star ? "currentColor" : "none"} />
-                      </button>
+         {/* 1. Stats Card */}
+         <div className="bg-[#1a1a1a] rounded-[2rem] p-8 md:p-10 flex flex-col md:flex-row gap-10 md:gap-20 item-center shadow-2xl border border-white/5">
+             {/* Left: Big Score */}
+             <div className="flex flex-col items-center justify-center min-w-[200px] text-center">
+                 <div className="text-[5rem] leading-none font-black text-white mb-2 tracking-tighter shadow-blue-500/50 drop-shadow-2xl">{statsSummary.average}</div>
+                 <div className="flex gap-1.5 text-red-500 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={20} fill={i < Math.round(Number(statsSummary.average)) ? "currentColor" : "none"} />
                     ))}
-                  </div>
-                </div>
-
-                <textarea
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder={user ? "Chia sẻ cảm nghĩ của bạn về bộ phim..." : "Vui lòng đăng nhập để bình luận"}
-                  disabled={!user}
-                  className="w-full bg-black border border-white/5 rounded-2xl p-6 text-white placeholder:text-gray-700 focus:outline-none focus:border-blue-500/50 resize-none h-32 transition-all disabled:opacity-50"
-                  onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSubmitComment(e);
-                      }
-                  }}
-                ></textarea>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-white/5">
-              <button
-                type="button"
-                onClick={() => setContainsSpoilers(!containsSpoilers)}
-                disabled={!user}
-                className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-colors ${containsSpoilers ? 'text-blue-500' : 'text-gray-600 hover:text-gray-400'} disabled:opacity-50`}
-              >
-                <EyeOff size={14} /> Có Spoilers?
-              </button>
-              
-              <button
-                type="submit"
-                disabled={!commentText.trim() || isSending || !user}
-                className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest hover:bg-blue-500 active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
-              >
-                <Send size={16} /> {isSending ? 'Đang gửi...' : 'Gửi bình luận'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      {/* Comments List */}
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
-           <div className="flex items-center gap-3">
-              <h2 className="text-xl font-black text-white uppercase italic tracking-tighter">Bình luận</h2>
-              <span className="px-3 py-1 bg-white/5 rounded-lg text-[10px] font-black text-gray-500">{comments.length}</span>
-           </div>
-           <div className="flex gap-4">
-              {['Top Rated', 'Newest'].map(sort => (
-                <button
-                  key={sort}
-                  onClick={() => setActiveSort(sort)}
-                  className={`text-[10px] font-black uppercase tracking-widest transition-all ${activeSort === sort ? 'text-blue-500' : 'text-gray-600 hover:text-white'}`}
-                >
-                  {sort === 'Top Rated' ? 'Hữu ích nhất' : 'Mới nhất'}
-                </button>
-              ))}
-           </div>
-        </div>
-
-        <div className="space-y-8">
-          {loading ? (
-             <div className="text-center py-10">
-                <i className="fa-solid fa-circle-notch fa-spin text-blue-500 text-3xl"></i>
+                 </div>
+                 <div className="text-gray-500 text-sm font-bold uppercase tracking-widest">{statsSummary.total} Reviews</div>
              </div>
-          ) : comments.length === 0 ? (
-             <div className="text-center py-16 bg-white/[0.01] rounded-[32px] border border-white/5">
-                <MessageSquare className="mx-auto text-gray-800 mb-4" size={40} />
-                <p className="text-gray-600 font-bold uppercase tracking-widest text-xs">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
-             </div>
-          ) : sortedComments.slice(0, visibleCommentsCount).map((comment) => (
-            <div key={comment.id} className="group/item border-b border-white/5 pb-8 last:border-0">
-              <div className="flex gap-6">
-                <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-white/5 bg-zinc-900 shadow-2xl">
-                  <img 
-                    src={comment.userAvatar} 
-                    alt={comment.userName} 
-                    className="w-full h-full object-cover" 
-                    onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${comment.userName}&background=random` }}
-                  />
-                </div>
-                <div className="flex-1 space-y-4">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-black text-white uppercase italic">{comment.userName}</span>
-                        <div className="flex gap-0.5 text-yellow-500">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={10} fill={i < (Number(comment.rating) || 0) ? "currentColor" : "none"} />
-                          ))}
+
+             {/* Right: Progress Bars */}
+             <div className="flex-1 space-y-3 w-full justify-center flex flex-col">
+                {statsSummary.breakdown.map((item) => (
+                    <div key={item.stars} className="flex items-center gap-4">
+                        <span className="text-sm font-bold text-gray-400 w-3">{item.stars}</span>
+                        <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden">
+                            <div 
+                                className="h-full bg-gradient-to-r from-red-600 to-red-500 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]" 
+                                style={{ width: `${item.percentage}%` }}
+                            />
                         </div>
-                        <span className="text-[10px] text-gray-700 font-bold">
-                          • {comment.createdAt?.toDate ? new Date(comment.createdAt.toDate()).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' ' + new Date(comment.createdAt.toDate()).toLocaleDateString('vi-VN') : 'Vừa xong'}
-                        </span>
-                      </div>
-                      {user && user.uid === comment.userId && (
-                        <button 
-                          onClick={() => handleDeleteComment(comment.id)}
-                          className="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-[10px] font-black text-red-500 uppercase tracking-widest transition-all hover:scale-105"
-                          title="Xóa bình luận này"
+                        <span className="text-sm font-bold text-gray-500 w-10 text-right">{item.percentage}%</span>
+                    </div>
+                ))}
+             </div>
+         </div>
+
+         {/* 2. Comment Input */}
+         <div className="flex gap-6">
+             <div className="hidden md:block w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0 border border-white/10">
+                {user ? (
+                    <img src={user.photoURL} alt="Me" className="w-full h-full object-cover" />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500"><MessageSquare size={20} /></div>
+                )}
+             </div>
+             
+             <div className="flex-1 bg-[#1a1a1a] border border-white/5 rounded-2xl overflow-hidden focus-within:border-white/20 transition-colors shadow-lg">
+                <form onSubmit={handleSubmitComment}>
+                    <textarea 
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="Bạn nghĩ gì về bộ phim này? Hãy chia sẻ suy nghĩ của bạn..." 
+                        className="w-full bg-transparent border-none p-6 text-base text-gray-200 placeholder:text-gray-600 focus:ring-0 min-h-[120px] resize-none"
+                    />
+                    
+                    <div className="bg-[#151515] px-6 py-4 flex items-center justify-between border-t border-white/5">
+                        <div className="flex items-center gap-4">
+                           <div className="hidden md:flex items-center gap-2">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                 <button
+                                    key={star}
+                                    type="button"
+                                    onClick={() => setUserRating(star)}
+                                    className={`transition-transform hover:scale-125 ${userRating >= star ? 'text-yellow-500' : 'text-gray-700'}`}
+                                 >
+                                    <Star size={18} fill={userRating >= star ? "currentColor" : "none"} />
+                                 </button>
+                               ))}
+                           </div>
+                           <span className="text-xs text-gray-500 font-medium hidden md:block">{userRating > 0 ? `${userRating} Stars` : 'Rate this movie'}</span>
+                        </div>
+
+                        <div className="flex items-center gap-6">
+                            <label className="flex items-center gap-2 cursor-pointer group">
+                                <div className={`w-4 h-4 border rounded transition-colors flex items-center justify-center ${containsSpoilers ? 'bg-red-500 border-red-500' : 'border-gray-600 group-hover:border-gray-400'}`}>
+                                    {containsSpoilers && <EyeOff size={10} className="text-white" />}
+                                </div>
+                                <input type="checkbox" checked={containsSpoilers} onChange={() => setContainsSpoilers(!containsSpoilers)} className="hidden" />
+                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider group-hover:text-gray-300 transition-colors">Contains Spoilers</span>
+                            </label>
+
+                            <button 
+                                type="submit"
+                                disabled={!commentText.trim() || isSending || !user}
+                                className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold uppercase tracking-wider hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] disabled:opacity-50 disabled:shadow-none"
+                            > 
+                                {isSending ? 'Posting...' : 'Post'}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+             </div>
+         </div>
+
+         {/* 3. Filters & List */}
+         <div className="space-y-6">
+             <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                   {['Top Rated', 'Newest'].map(sort => (
+                        <button
+                          key={sort}
+                          onClick={() => setActiveSort(sort)}
+                          className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${activeSort === sort ? 'bg-red-600 border-red-600 text-white' : 'bg-transparent border-white/10 text-gray-500 hover:text-white hover:border-white/30'}`}
                         >
-                          XÓA
+                          {sort}
                         </button>
-                      )}
-                    </div>
-                  </div>
-                  <div className="relative">
-                    {comment.hasSpoiler && !revealedSpoilers.has(comment.id) ? (
-                      <div 
-                        onClick={() => toggleSpoiler(comment.id)}
-                        className="bg-white/5 border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white/10 transition-all group"
-                      >
-                        <EyeOff className="text-blue-500 group-hover:scale-110 transition-transform" size={20} />
-                        <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Nội dung có Spoilers</span>
-                        <span className="text-[9px] text-gray-600 font-bold">Nhấn để xem chi tiết</span>
-                      </div>
-                    ) : (
-                      <p className="text-gray-400 text-base leading-relaxed font-medium">{comment.text}</p>
-                    )}
-                  </div>
-                  
-                  {/* Action Buttons & Reply Toggle */}
-                  <div className="flex items-center gap-8 pt-2">
-                    <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
-                      <button 
-                        onClick={() => handleVote(comment.id, 'like')}
-                        className={`flex items-center gap-2 transition-colors ${comment.userVotes?.[user?.uid] === 'like' ? 'text-blue-500' : 'text-gray-600 hover:text-blue-400'}`}
-                      >
-                        <ThumbsUp size={14} fill={comment.userVotes?.[user?.uid] === 'like' ? "currentColor" : "none"} /> {comment.likes || 0}
-                      </button>
-                      <button 
-                         onClick={() => handleVote(comment.id, 'dislike')}
-                         className={`flex items-center gap-2 transition-colors ${comment.userVotes?.[user?.uid] === 'dislike' ? 'text-red-500' : 'text-gray-600 hover:text-red-400'}`}
-                      >
-                        <ThumbsDown size={14} fill={comment.userVotes?.[user?.uid] === 'dislike' ? "currentColor" : "none"} /> {comment.dislikes || 0}
-                      </button>
-                      <button 
-                          onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-                          className="flex items-center gap-2 text-gray-600 hover:text-white transition-colors ml-4"
-                      >
-                          <CornerDownRight size={14} /> Trả lời
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Replies Rendering */}
-                  {comment.replies && comment.replies.length > 0 && (
-                      <div className="pl-6 border-l w-full border-white/10 mt-4 space-y-4">
-                          {comment.replies.map((reply, rIdx) => (
-                              <div key={rIdx} className="flex gap-4">
-                                  <img src={reply.userAvatar} className="w-8 h-8 rounded-lg object-cover" alt="" />
-                                  <div>
-                                      <div className="flex items-center gap-2 mb-1">
-                                          <span className="text-xs font-bold text-white">{reply.userName}</span>
-                                          <span className="text-[10px] text-gray-600">{new Date(reply.createdAt).toLocaleDateString('vi-VN')}</span>
-                                      </div>
-                                      <p className="text-sm text-gray-400 ">{reply.text}</p>
-                                  </div>
-                              </div>
-                          ))}
-                      </div>
-                  )}
-
-                  {/* Reply Input Form */}
-                  {replyingTo === comment.id && (
-                      <div className="mt-4 flex gap-4 animate-in fade-in slide-in-from-top-2">
-                           <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-zinc-900 border border-white/5">
-                               {user ? (
-                                   <img src={user.photoURL} className="w-full h-full object-cover" alt="Me" />
-                               ) : <div className="w-full h-full bg-zinc-800" />}
-                           </div>
-                           <div className="flex-1">
-                               <input 
-                                  type="text" 
-                                  value={replyText}
-                                  onChange={(e) => setReplyText(e.target.value)}
-                                  placeholder={`Trả lời ${comment.userName}...`}
-                                  className="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
-                                  onKeyDown={(e) => {
-                                      if (e.key === 'Enter') handleReplySubmit(comment.id);
-                                  }}
-                                  autoFocus
-                               />
-                               <div className="flex justify-end gap-2 mt-2">
-                                   <button onClick={() => setReplyingTo(null)} className="text-[10px] uppercase font-bold text-gray-500 hover:text-white px-3 py-1">Hủy</button>
-                                   <button onClick={() => handleReplySubmit(comment.id)} className="text-[10px] uppercase font-bold bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-500">Gửi</button>
-                               </div>
-                           </div>
-                      </div>
-                  )}
-
+                    ))}
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+                <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+                    Showing {Math.min(visibleCommentsCount, comments.length)} of {comments.length}
+                </div>
+             </div>
 
-        {visibleCommentsCount < comments.length && (
-          <div className="text-center pt-8">
-            <button
-               onClick={() => setVisibleCommentsCount(prev => prev + 5)}
-               className="bg-white/5 text-gray-400 px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all active:scale-95"
-            >
-              Xem thêm bình luận
-            </button>
-          </div>
-        )}
+             <div className="space-y-4">
+                {comments.length === 0 ? (
+                    <div className="text-center py-20 opacity-50">
+                        <MessageSquare size={48} className="mx-auto mb-4 text-gray-700" />
+                        <p className="text-gray-500">Chưa có bình luận nào.</p>
+                    </div>
+                ) : (
+                    sortedComments.slice(0, visibleCommentsCount).map(comment => (
+                        <div key={comment.id} id={`comment-${comment.id}`} className="flex gap-4 md:gap-6 group">
+                            <div className="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden shrink-0 border border-white/10">
+                                <img 
+                                    src={comment.userAvatar} 
+                                    className="w-full h-full object-cover" 
+                                    onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.userName)}&background=random` }}
+                                    alt="" 
+                                />
+                            </div>
+                            <div className="flex-1 border-b border-white/5 pb-6">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-sm font-bold text-white">{comment.userName}</span>
+                                    {Number(comment.rating) > 0 && (
+                                        <div className="flex text-yellow-500">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} size={10} fill={i < Number(comment.rating) ? "currentColor" : "none"} />
+                                            ))}
+                                        </div>
+                                    )}
+                                    <span className="text-[10px] text-gray-600 font-bold">• {comment.createdAt?.toDate ? new Date(comment.createdAt.toDate()).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                                    {comment.hasSpoiler && <span className="text-[9px] bg-red-900/50 text-red-500 px-1.5 py-0.5 rounded border border-red-500/20 font-bold uppercase tracking-wider">Spoiler</span>}
+                                </div>
+
+                                <div className="relative mb-3">
+                                    {comment.hasSpoiler && !revealedSpoilers.has(comment.id) ? (
+                                        <div 
+                                            onClick={() => toggleSpoiler(comment.id)} 
+                                            className="bg-[#1c1c1c] border border-red-900/30 rounded-lg p-8 text-center cursor-pointer hover:bg-[#222] transition-colors group/spoiler relative overflow-hidden"
+                                        >
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                                                <EyeOff size={100} />
+                                            </div>
+                                            <p className="text-red-500 font-black uppercase tracking-[0.2em] mb-1 relative z-10">Contains Spoilers</p>
+                                            <p className="text-gray-600 text-xs relative z-10">Click to reveal</p>
+                                        </div>
+                                    ) : (
+                                        <p className="text-gray-300 text-sm leading-relaxed">{comment.content || comment.text}</p>
+                                    )}
+                                </div>
+
+                                <div className="flex items-center gap-6">
+                                    <button onClick={() => handleVote(comment.id, 'like')} className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${comment.userVotes?.[user?.uid] === 'like' ? 'text-red-500' : 'text-gray-500 hover:text-white'}`}>
+                                        <ThumbsUp size={14} fill={comment.userVotes?.[user?.uid] === 'like' ? "currentColor" : "none"} /> {comment.likes || 0}
+                                    </button>
+                                    <button onClick={() => handleVote(comment.id, 'dislike')} className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${comment.userVotes?.[user?.uid] === 'dislike' ? 'text-gray-400' : 'text-gray-500 hover:text-white'}`}>
+                                        <ThumbsDown size={14} fill={comment.userVotes?.[user?.uid] === 'dislike' ? "currentColor" : "none"} /> 
+                                    </button>
+                                    <button onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)} className="text-xs font-bold text-gray-500 hover:text-white uppercase tracking-wider">Reply</button>
+                                    {user && user.uid === comment.userId && (
+                                        <button onClick={() => handleDeleteComment(comment.id)} className="text-xs font-bold text-gray-600 hover:text-red-500 ml-auto">Delete</button>
+                                    )}
+                                </div>
+
+                                {/* Replies */}
+                                {comment.replies?.length > 0 && (
+                                    <div className="mt-6 space-y-4 pl-4 border-l-2 border-white/5">
+                                        {comment.replies.map((reply, rid) => (
+                                            <div key={rid} className="flex gap-4">
+                                                <img src={reply.userAvatar} className="w-8 h-8 rounded-full object-cover bg-zinc-800" alt="" />
+                                                <div className="flex-1">
+                                                     <div className="flex items-center gap-2 mb-1">
+                                                         <span className="text-xs font-bold text-white">{reply.userName}</span>
+                                                         <span className="text-[10px] text-gray-600">{new Date(reply.createdAt).toLocaleDateString('vi-VN')}</span>
+                                                     </div>
+                                                     <p className="text-sm text-gray-400">{reply.text}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Reply Input */}
+                                {replyingTo === comment.id && (
+                                    <div className="mt-4 flex gap-4 animate-in fade-in slide-in-from-top-2">
+                                        <div className="flex-1 relative">
+                                            <input 
+                                                autoFocus
+                                                value={replyText}
+                                                onChange={(e) => setReplyText(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleReplySubmit(comment.id)}
+                                                placeholder={`Reply to ${comment.userName}...`}
+                                                className="w-full bg-[#151515] border border-white/10 rounded-full px-5 py-3 text-sm text-white focus:outline-none focus:border-red-500/50"
+                                            />
+                                            <button 
+                                                onClick={() => handleReplySubmit(comment.id)}
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-red-600 text-white rounded-full hover:bg-red-500"
+                                            >
+                                                <CornerDownRight size={14} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))
+                )}
+                
+                {visibleCommentsCount < comments.length && (
+                    <div className="text-center pt-8">
+                        <button onClick={() => setVisibleCommentsCount(p => p + 5)} className="px-8 py-3 rounded-full border border-white/10 text-gray-400 font-bold uppercase tracking-widest text-xs hover:bg-white hover:text-black transition-all">Load More Comments</button>
+                    </div>
+                )}
+             </div>
+         </div>
       </div>
     </div>
   );

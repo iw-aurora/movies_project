@@ -39,6 +39,7 @@ export const register = async (email, password, displayName) => {
       displayName: displayName || null,
       username: displayName || null,
       email: email,
+      password: password,
       status: "active",
       createdAt: new Date().toISOString()
     });

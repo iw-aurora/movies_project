@@ -4,8 +4,7 @@ import ContinueWatching from '../components/user/ContinueWatching';
 import UserList from '../components/user/UserList';
 import UserComment from '../components/user/UserComment';
 import ChangePass from '../components/user/ChangePass';
-import Header from '../components/admin/Header';
-import Footer from '../components/home/Footer';
+
 
 const User = () => {
   const tabs = ['Overview', 'Favorites', 'Watch History', 'Reviews', 'Settings'];
@@ -13,8 +12,7 @@ const User = () => {
 
   return (
     <>
-        <Header/>
-        <main className="pt-24 pb-12 px-8 max-w-7xl mx-auto">
+        <main className="pt-24 pb-12 px-8 container mx-auto">
         <ProfileHero onEditProfileClick={() => setActiveTab('Settings')} />
 
         <nav className="flex items-center gap-8 border-b border-white/10 mb-10 overflow-x-auto no-scrollbar">
@@ -80,7 +78,6 @@ const User = () => {
             )}
         </div>
         </main>
-        <Footer/>
     </>
   );
 };

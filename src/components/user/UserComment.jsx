@@ -1,25 +1,76 @@
-import { useTrending } from '../../hooks/useTrending';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Context/AuthContext';
+import { subscribeToUserComments } from '../../firebase/CommentService';
 import { getImageUrl } from '../../lib/utils/image';
 
 const UserComment = ({ isFullView = false, onViewAllClick }) => {
-  const { movies: trendingMovies } = useTrending();
-  
-  // Create mock reviews based on trending movies
-  // If full view, we can pretend there are more reviews by duplicating or using more trending movies
-  const sourceMovies = isFullView ? trendingMovies : trendingMovies.slice(0, 2);
-  
-  const reviews = sourceMovies.map((movie, index) => ({
-    id: movie.id + index, // ensure unique ID if we have duplicates in real scenarios
-    movieTitle: movie.title || movie.name,
-    avatar: getImageUrl(movie.poster_path),
-    rating: 5,
-    content: index % 2 === 0
-      ? 'Visual masterpiece. The sound design is incredible...' 
-      : 'Still blows my mind every time I watch it.',
-    date: '2d ago',
-  }));
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  if (reviews.length === 0) return null;
+  useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    const limitCount = isFullView ? null : 3;
+    
+    const unsubscribe = subscribeToUserComments(
+      user.uid,
+      (comments) => {
+        setReviews(comments);
+        setLoading(false);
+      },
+      limitCount
+    );
+
+    return () => unsubscribe();
+  }, [user, isFullView]);
+
+  
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'Just now';
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+    return date.toLocaleDateString();
+  };
+
+  if (loading) {
+    return (
+      <div className={`${isFullView ? '' : 'bg-white/[0.03] border border-white/5 rounded-3xl p-6 mb-6'}`}>
+        <div className="flex items-center justify-center py-12">
+          <i className="fa-solid fa-circle-notch fa-spin text-2xl text-blue-600"></i>
+        </div>
+      </div>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <div className={`${isFullView ? '' : 'bg-white/[0.03] border border-white/5 rounded-3xl p-6 mb-6'}`}>
+        {!isFullView && (
+          <div className="flex items-center gap-2 mb-6 text-yellow-500">
+             <i className="fa-solid fa-star text-sm"></i>
+             <h2 className="text-lg font-bold text-white">Recent Reviews</h2>
+          </div>
+        )}
+        <div className="text-center py-12 text-gray-500">
+          <i className="fa-regular fa-comment-dots text-4xl mb-4 block"></i>
+          <p className="text-sm font-medium">Bạn chưa có đánh giá nào</p>
+          <p className="text-xs mt-2">Hãy xem phim và để lại nhận xét của bạn!</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`${isFullView ? '' : 'bg-white/[0.03] border border-white/5 rounded-3xl p-6 mb-6'}`}>
@@ -34,11 +85,12 @@ const UserComment = ({ isFullView = false, onViewAllClick }) => {
         {reviews.map((review) => (
           <div 
             key={review.id} 
-            className={`flex gap-4 group ${isFullView ? 'bg-zinc-900/50 p-6 rounded-3xl border border-white/5 hover:border-white/10 transition-all' : ''}`}
+            onClick={() => navigate(`/watch/${review.movieId}#comment-${review.id}`)}
+            className={`flex gap-4 group cursor-pointer ${isFullView ? 'bg-zinc-900/50 p-6 rounded-3xl border border-white/5 hover:border-blue-500/30 hover:bg-blue-500/5 transition-all' : ''}`}
           >
             <div className={`relative shrink-0 ${isFullView ? 'w-24 h-36' : 'w-12 h-16'}`}>
                 <img
-                src={review.avatar}
+                src={review.moviePoster ? getImageUrl(review.moviePoster) : 'https://via.placeholder.com/300x450?text=No+Image'}
                 alt={review.movieTitle}
                 className="w-full h-full rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all border border-white/10 shadow-lg"
                 />
@@ -47,10 +99,10 @@ const UserComment = ({ isFullView = false, onViewAllClick }) => {
             <div className="flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-1">
                 <h3 className={`font-bold text-white group-hover:text-blue-500 transition-colors ${isFullView ? 'text-lg' : 'text-sm'}`}>
-                  {review.movieTitle}
+                  {review.movieTitle || 'Untitled Movie'}
                 </h3>
                 <span className={`text-gray-500 font-bold whitespace-nowrap ${isFullView ? 'text-xs' : 'text-[10px]'}`}>
-                  {review.date}
+                  {formatDate(review.createdAt)}
                 </span>
               </div>
 
@@ -59,37 +111,28 @@ const UserComment = ({ isFullView = false, onViewAllClick }) => {
                   <i
                     key={i}
                     className={`fa-solid fa-star ${isFullView ? 'text-xs' : 'text-[10px]'} ${
-                      i < review.rating ? 'text-yellow-500' : 'text-gray-700'
+                      i < (review.rating || 0) ? 'text-yellow-500' : 'text-gray-700'
                     }`}
                   />
                 ))}
               </div>
 
               <p className={`text-gray-400 leading-relaxed font-medium line-clamp-3 ${isFullView ? 'text-sm' : 'text-xs'}`}>
-                "{review.content}"
+                "{review.text || review.content || review.comment || 'No comment'}"
               </p>
               
-               {isFullView && (
-                   <div className="mt-auto pt-4 flex items-center gap-4">
-                       <button className="text-xs font-bold text-gray-500 hover:text-white flex items-center gap-2 transition-colors">
-                            <i className="fa-regular fa-thumbs-up"></i> Helpful
-                       </button>
-                       <button className="text-xs font-bold text-gray-500 hover:text-white flex items-center gap-2 transition-colors">
-                            <i className="fa-regular fa-message"></i> Reply
-                       </button>
-                   </div>
-               )}
+
             </div>
           </div>
         ))}
       </div>
 
-      {!isFullView && (
+      {!isFullView && reviews.length > 0 && (
         <button 
           onClick={onViewAllClick}
           className="w-full mt-6 py-3 rounded-xl border border-white/10 text-xs font-bold text-gray-400 hover:bg-white/5 hover:text-white transition-all flex items-center justify-center gap-2"
         >
-          <span>View all reviews</span>
+          <span>View all reviews ({reviews.length})</span>
           <i className="fa-solid fa-arrow-right"></i>
         </button>
       )}

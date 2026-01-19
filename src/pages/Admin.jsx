@@ -1,13 +1,13 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { createSecondaryUser } from '../firebase/AuthService';
 import { subscribeToUsers, updateUser, updateUserStatus } from '../firebase/UserService';
+import { subscribeToComments, getMoviesWithComments } from '../firebase/CommentService';
 import UserForm from '../components/admin/UserForm';
 import UserTable from '../components/admin/UserTable';
-import Footer from '../components/home/Footer';
+import CommentManage from '../components/admin/CommentManage';
 import Filter from '../components/admin/Filter';
-import Header from '../components/admin/Header';
 import Swal from 'sweetalert2';
-import { Users, UserCheck, UserX } from "lucide-react";
+import { Users, UserCheck, UserX, MessageSquare } from "lucide-react";
 
 
 const SummaryCard = ({ title, value, color, icon: Icon }) => (
@@ -26,6 +26,20 @@ const SummaryCard = ({ title, value, color, icon: Icon }) => (
 
 
 const Admin = () => {
+  const [activeTab, setActiveTab] = useState('users');
+  const [commentStats, setCommentStats] = useState({ totalComments: 0, totalMovies: 0 });
+  
+  useEffect(() => {
+    const unsub = subscribeToComments((data) => {
+       const movies = getMoviesWithComments(data);
+       setCommentStats({
+          totalComments: data.length,
+          totalMovies: movies.length
+       });
+    });
+    return () => unsub();
+  }, []);
+
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     username: '',
@@ -229,48 +243,118 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#09090b]">
-      <Header />
 
-      <main className="flex-grow max-w-7xl mx-auto w-full px-8 pt-24 pb-24">
-        <header className="mb-10 flex items-center justify-between gap-8">
-            {/* LEFT */}
-            <h1 className="text-5xl font-black text-white whitespace-nowrap">
-                QUẢN LÝ NGƯỜI DÙNG
-            </h1>
+      <main className="flex-grow container mx-auto w-full px-8 pt-24 pb-24">
+        
+        {/* Header & Tabs */}
+        <header className="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
+            <div className="flex flex-col gap-6">
+                <h1 className="text-5xl font-black text-white whitespace-nowrap">
+                    ADMIN DASHBOARD
+                </h1>
 
-            {/* RIGHT */}
-            <div className="grid grid-cols-3 gap-4">
-                <SummaryCard
-                title="Tổng"
-                value={stats.total}
-                color="text-indigo-500"
-                icon={Users}
-                />
-
-                <SummaryCard
-                title="Hoạt động"
-                value={stats.active}
-                color="text-emerald-500"
-                icon={UserCheck}
-                />
-
-                <SummaryCard
-                title="Bị khóa"
-                value={stats.locked}
-                color="text-rose-500"
-                icon={UserX}
-                />
-
+                {/* TAB NAVIGATION */}
+                <div className="flex p-1 bg-white/5 rounded-2xl border border-white/5 w-fit">
+                    <button
+                        onClick={() => setActiveTab('users')}
+                        className={`px-8 py-3 rounded-xl text-sm font-black uppercase tracking-widest flex items-center gap-3 transition-all ${
+                            activeTab === 'users' 
+                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
+                            : 'text-gray-500 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                        <Users size={18} />
+                        Quản lý User
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('comments')}
+                        className={`px-8 py-3 rounded-xl text-sm font-black uppercase tracking-widest flex items-center gap-3 transition-all ${
+                            activeTab === 'comments' 
+                            ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
+                            : 'text-gray-500 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                        <MessageSquare size={18} />
+                        Quản lý Bình luận
+                    </button>
+                </div>
+            </div>
+ 
+            {/* RIGHT STATS */}
+            <div className="grid grid-cols-3 gap-4 w-full xl:w-auto animate-in fade-in zoom-in duration-500">
+                {activeTab === 'users' ? (
+                    <>
+                        <SummaryCard
+                            title="Tổng User"
+                            value={stats.total}
+                            color="text-indigo-500"
+                            icon={Users}
+                        />
+                        <SummaryCard
+                            title="Hoạt động"
+                            value={stats.active}
+                            color="text-emerald-500"
+                            icon={UserCheck}
+                        />
+                        <SummaryCard
+                            title="Bị khóa"
+                            value={stats.locked}
+                            color="text-rose-500"
+                            icon={UserX}
+                        />
+                    </>
+                ) : (
+                   <>
+                        <SummaryCard
+                            title="Tổng bình luận"
+                            value={commentStats.totalComments}
+                            color="text-rose-500"
+                            icon={MessageSquare}
+                        />
+                        <SummaryCard
+                            title="Số bộ phim"
+                            value={commentStats.totalMovies}
+                            color="text-amber-500"
+                            icon={(props) => <i className="fa-solid fa-clapperboard w-6 h-6 text-amber-500"></i>}
+                        />
+                         <SummaryCard
+                            title="Chờ duyệt"
+                            value={0} // Placeholder for moderation feature
+                            color="text-gray-500"
+                            icon={(props) => <i className="fa-solid fa-clock w-6 h-6 text-gray-500"></i>}
+                        />
+                   </>
+                )}
             </div>
         </header>
 
 
-        <UserForm formData={formData} setFormData={setFormData} onAction={handleAction} isEditing={!!selectedUserId} loading={loading} />
-        <UserTable users={filteredUsers} onSelectUser={handleSelectUser} selectedUserId={selectedUserId} quickSearch={quickSearch} onQuickSearchChange={setQuickSearch} />
+        {/* CONTENT RENDER */}
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {activeTab === 'users' ? (
+                <>
+                    <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 animate-in fade-in slide-in-from-bottom-2">
+                        <div>
+                        <h1 className="text-5xl font-black text-white uppercase tracking-tighter">
+                            Quản lý <span className="text-indigo-500">Người dùng</span>
+                        </h1>
+                        <p className="text-zinc-500 mt-2 font-medium">
+                            Quản lý tài khoản, phân quyền và trạng thái người dùng.
+                        </p>
+                        </div>
+                    </header>
+
+                    <UserForm formData={formData} setFormData={setFormData} onAction={handleAction} isEditing={!!selectedUserId} loading={loading} />
+                    <UserTable users={filteredUsers} onSelectUser={handleSelectUser} selectedUserId={selectedUserId} quickSearch={quickSearch} onQuickSearchChange={setQuickSearch} />
+                </>
+            ) : (
+                <CommentManage />
+            )}
+        </div>
       </main>
 
       <Filter isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} onApply={setActiveFilters} currentFilters={activeFilters} />
-      <Footer />
+
     </div>
   );
 };

@@ -18,7 +18,6 @@ const UserList = () => {
       return;
     }
 
-    // Subscribe to the user's 'my_list' subcollection
     const q = query(
         collection(db, 'users', user.uid, 'my_list'),
         orderBy('addedAt', 'desc')

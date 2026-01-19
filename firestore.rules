@@ -1,10 +1,66 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow everything for development purposes to fix "Missing permissions" error.
-    // WARNING: Secure this before production!
-    match /{document=**} {
-      allow read, write: if true;
+
+    // Hàm kiểm tra Admin (Kiểm tra role trong DB HOẶC email đặc biệt)
+    function isAdmin() {
+      return request.auth != null && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email == 'admin@gmail.com'
+      );
+    }
+
+    // Collection Người dùng
+    match /users/{userId} {
+      allow read: if true;
+      // Cho phép tự sửa mình HOẶC Admin sửa tất cả
+      allow write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      
+      // THÊM ĐOẠN NÀY ĐỂ CHO PHÉP GHI VÀO DANH SÁCH YÊU THÍCH (My List)
+      match /my_list/{movieId} {
+         allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      }
+
+      // Hỗ trợ lưu watch_history nếu dùng dạng sub-collection
+      match /watch_history/{historyId} {
+         allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      }
+    }
+
+    // Rule cho watch_history dạng top-level (để fix lỗi permission hiện tại)
+    match /watch_history/{historyId} {
+       allow read, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+       allow create, update: if request.auth != null && (request.resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Collection Bình luận (movie_comments)
+    match /movie_comments/{commentId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      // Chủ sở hữu HOẶC Admin mới được sửa/xóa
+      allow update, delete: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin());
+    }
+
+    // Collection Phim
+    match /movies/{movieId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      match /episodes/{episodeId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // Hỗ trợ bổ sung cho bộ lọc/search Admin
+    match /{path=**}/users/{userId} {
+      allow read: if true;
+    }
+
+    // Cho phép mọi người gửi góp ý, nhưng chỉ Admin mới được xem/xóa
+    match /feedbacks/{feedbackId} {
+      allow create: if true; 
+      allow read, update, delete: if isAdmin();
     }
   }
 }

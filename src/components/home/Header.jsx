@@ -1,11 +1,15 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../Context/AuthContext";
 import { logout } from "../../firebase/AuthService";
 import Swal from 'sweetalert2';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchInputRef = useRef(null);
+  const navigate = useNavigate();
+  const { user, role } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -58,13 +62,42 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-6">
-        <button className="hidden sm:block text-gray-400 hover:text-white transition-colors text-lg">
-          <i className="fa-solid fa-magnifying-glass"></i>
-        </button>
+        <div className="hidden sm:flex items-center">
+            <div className={`
+                flex items-center overflow-hidden transition-all duration-300 ease-in-out
+                ${isSearchOpen ? 'w-64 opacity-100 mr-4' : 'w-0 opacity-0'}
+            `}>
+                <div className="w-full flex items-center bg-white/10 border border-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
+                    <input
+                        ref={searchInputRef}
+                        type="text"
+                        placeholder="Tìm kiếm..."
+                        className="bg-transparent border-none outline-none text-sm text-white placeholder-gray-400 w-full"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                navigate(`/store?search=${encodeURIComponent(e.target.value)}`);
+                                setIsSearchOpen(false);
+                                e.target.value = '';
+                            }
+                        }}
+                    />
+                </div>
+            </div>
+            <button 
+                onClick={() => {
+                    setIsSearchOpen(!isSearchOpen);
+                    if (!isSearchOpen) {
+                        setTimeout(() => searchInputRef.current?.focus(), 100);
+                    }
+                }}
+                className="text-gray-400 hover:text-white transition-colors text-lg w-10 h-10 flex items-center justify-center"
+            >
+                <i className="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
         {/* show login link when no user, otherwise show avatar + logout */}
         {(() => {
-          const { user, role } = useAuth();
-          const navigate = useNavigate();
+          // Hooks lifted to top level
           const handleLogout = async () => {
             const result = await Swal.fire({
               title: 'Bạn có chắc chắn muốn đăng xuất không?',

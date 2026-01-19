@@ -29,21 +29,15 @@ const ProfileHero = ({ onEditProfileClick }) => {
 
     setUploading(true);
     try {
-      // 1. Upload to Storage
       const photoURL = await uploadUserAvatar(user.uid, file);
       
-      // 2. Update Auth Profile
       await updateProfile(user, { photoURL });
       
-      // 3. Update Firestore
       await updateUser(user.uid, { photoURL });
       
-      // 4. Update Global Auth State (triggers Header re-render)
-      // We create a new object to ensure React detects the change
       const updatedUser = { ...user, photoURL };
       setUser(updatedUser);
 
-      // 5. Update Local Component State
       setUserData(prev => ({ ...prev, photoURL }));
       
     } catch (error) {

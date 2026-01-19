@@ -1,16 +1,43 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { usePopularMovies } from '../../hooks/usePopular';
+import { useAuth } from '../../Context/AuthContext';
+import { getWatchHistory } from '../../firebase/HistoryService';
 import { getImageUrl } from '../../lib/utils/image';
 
 const ContinueWatching = ({ onViewAllClick, compact = false }) => {
-  const { movies: popularMovies } = usePopularMovies();
+  const { user } = useAuth();
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock progress for the first 2 movies
-  const movies = popularMovies.slice(0, 2).map((movie, index) => ({
-    ...movie,
-    progress: index === 0 ? 65 : 80,
-    remainingTime: index === 0 ? '1h 24m remaining' : '45m remaining'
-  }));
+  useEffect(() => {
+    if (user) {
+      const loadHistory = async () => {
+        const history = await getWatchHistory(user.uid);
+        
+        // Format for display
+        const formatted = history.map(item => ({
+            ...item,
+            // Calculate remaining
+            remainingTime: formatRemaining(item.duration - item.progress)
+        }));
+
+        setMovies(compact ? formatted.slice(0, 2) : formatted);
+        setLoading(false);
+      };
+      loadHistory();
+    } else {
+        setMovies([]);
+        setLoading(false);
+    }
+  }, [user, compact]);
+
+  const formatRemaining = (seconds) => {
+      if (seconds <= 0) return 'Completed';
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      if (hours > 0) return `${hours}h ${minutes}m còn lại`;
+      return `${minutes}m còn lại`;
+  };
 
   if (movies.length === 0) return null;
 
@@ -34,7 +61,7 @@ const ContinueWatching = ({ onViewAllClick, compact = false }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {movies.map((movie) => (
-          <Link key={movie.id} to={`/title/${movie.id}`} className="group cursor-pointer block">
+          <Link key={movie.id} to={`/watch/${movie.movieId || movie.id}`} className="group cursor-pointer block">
             <div className="relative aspect-video rounded-2xl overflow-hidden mb-3 border border-white/5 group-hover:border-blue-500/50 transition-all">
               <img
                 src={getImageUrl(movie.backdrop_path)}
@@ -52,7 +79,7 @@ const ContinueWatching = ({ onViewAllClick, compact = false }) => {
                 <div className="h-1 w-full bg-white/20 rounded-full overflow-hidden mb-1">
                   <div
                     className="h-full bg-blue-500"
-                    style={{ width: `${movie.progress}%` }}
+                    style={{ width: `${movie.percentage || 0}%` }}
                   />
                 </div>
               </div>

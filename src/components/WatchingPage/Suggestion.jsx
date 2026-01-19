@@ -101,9 +101,9 @@ const Suggestion = ({ episodes = [], currentEpisode, onEpisodeSelect, isLoading,
             <Link
               to={`/watch/${movie.id}`}
               key={movie.id}
-              className="flex gap-4 p-3 bg-[#0c0c0c] hover:bg-[#121212] border border-white/5 rounded-2xl transition-all group cursor-pointer block"
+              className="flex gap-4 p-3 bg-[#0c0c0c] hover:bg-[#141414] border border-white/5 hover:border-blue-500/30 rounded-2xl transition-all duration-300 group cursor-pointer block hover:shadow-lg hover:shadow-blue-500/10"
             >
-              <div className="w-20 h-28 shrink-0 rounded-xl overflow-hidden shadow-xl grayscale group-hover:grayscale-0 group-hover:scale-95 transition-all bg-zinc-900 border border-white/5">
+              <div className="w-20 h-28 shrink-0 rounded-xl overflow-hidden shadow-xl group-hover:scale-105 transition-all duration-300 bg-zinc-900 border border-white/5 group-hover:border-blue-500/20">
                 <img
                   src={getPoster(movie.poster_path, "w200")}
                   alt={movie.title || movie.name}
@@ -116,14 +116,14 @@ const Suggestion = ({ episodes = [], currentEpisode, onEpisodeSelect, isLoading,
                   <h4 className="text-sm font-black text-white line-clamp-2 leading-tight uppercase group-hover:text-blue-400 transition-colors">
                     {movie.title || movie.name}
                   </h4>
-                  <div className="flex items-center gap-2 text-[10px] text-gray-600 font-bold uppercase tracking-wider">
+                  <div className="flex items-center gap-2 text-[10px] text-gray-500 font-bold uppercase tracking-wider">
                     <span>{movie.release_date?.slice(0, 4) || 'N/A'}</span>
                     <span className="text-blue-500">•</span>
                     <span className="truncate">Movie</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-blue-400 text-[10px] font-black bg-blue-500/10 self-start px-2.5 py-1 rounded-md">
+                <div className="flex items-center gap-1.5 text-blue-400 text-[10px] font-black bg-blue-500/10 self-start px-2.5 py-1 rounded-md group-hover:bg-blue-500/20 transition-colors">
                   <Star size={10} fill="currentColor" />
                   <span>{movie.vote_average?.toFixed(1) || 'N/A'}</span>
                 </div>
