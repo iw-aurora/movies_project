@@ -36,6 +36,8 @@ import {
 import { useAuth } from '../../Context/AuthContext';
 import Swal from 'sweetalert2';
 
+import { calculateMovieRating } from '../../lib/utils/ratingHelpers';
+
 const MovieInfo = ({ movie }) => {
   const { user } = useAuth();
   const [commentText, setCommentText] = useState('');
@@ -90,35 +92,11 @@ const MovieInfo = ({ movie }) => {
   }, [movie?.id, user]);
 
   const statsSummary = useMemo(() => {
+    // New Logic: Use helper to combine TMDB + User Ratings
     const tmdbRating = movie.vote_average || 0;
     const tmdbCount = movie.vote_count || 0;
-    const userCount = comments.length;
-    if (userCount === 0) {
-      const average = (tmdbRating / 2).toFixed(1);
-      const breakdown = [5, 4, 3, 2, 1].map(stars => {
-         const scoreTarget = Math.round(tmdbRating / 2);
-         const isTarget = stars === scoreTarget;
-         return { stars, count: isTarget ? tmdbCount : 0, percentage: isTarget ? 100 : 0 };
-      });
-      return { total: tmdbCount, average, breakdown, isTMDB: true };
-    }
-
-    const ratingsCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    let sumPoints = 0;
-    comments.forEach(c => {
-      const r = Number(c.rating) || 5;
-      ratingsCount[r] = (ratingsCount[r] || 0) + 1;
-      sumPoints += r;
-    });
-
-    const average = (sumPoints / userCount).toFixed(1);
-    const breakdown = [5, 4, 3, 2, 1].map(stars => ({
-      stars,
-      count: ratingsCount[stars],
-      percentage: Math.round((ratingsCount[stars] / userCount) * 100)
-    }));
-
-    return { total: userCount, average, breakdown, isTMDB: false };
+    
+    return calculateMovieRating(tmdbRating, tmdbCount, comments);
   }, [comments, movie]);
 
   const sortedComments = useMemo(() => {

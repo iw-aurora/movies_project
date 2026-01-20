@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, onSnapshot, doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, setDoc, getDoc, query, where, getCountFromServer } from "firebase/firestore";
 
 /**
  * Lấy thông tin profile người dùng
@@ -88,4 +88,41 @@ export const uploadUserAvatar = async (userId, file) => {
     const snapshot = await uploadBytes(storageRef, file);
     const url = await getDownloadURL(snapshot.ref);
     return url;
+};
+
+/**
+ * Lấy thống kê hoạt động của người dùng
+ * @param {string} userId 
+ * @returns {Promise<Object>} { favorites, history, comments }
+ */
+export const getUserStats = async (userId) => {
+    try {
+        const favoritesColl = collection(db, 'users', userId, 'my_list');
+
+        // Watch History is top-level collection
+        const historyQuery = query(
+            collection(db, 'watch_history'),
+            where('userId', '==', userId)
+        );
+
+        const commentsQuery = query(
+            collection(db, 'movie_comments'),
+            where('userId', '==', userId)
+        );
+
+        const [favoritesSnap, historySnap, commentsSnap] = await Promise.all([
+            getCountFromServer(favoritesColl),
+            getCountFromServer(historyQuery),
+            getCountFromServer(commentsQuery)
+        ]);
+
+        return {
+            favorites: favoritesSnap.data().count,
+            history: historySnap.data().count,
+            comments: commentsSnap.data().count
+        };
+    } catch (e) {
+        console.error("Error fetching stats:", e);
+        return { favorites: 0, history: 0, comments: 0 };
+    }
 };

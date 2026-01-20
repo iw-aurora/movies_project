@@ -77,23 +77,28 @@ const ChangePass = (props) => {
 
   if (props.compact) {
     return (
-      <div className="bg-white/[0.03] border border-white/5 rounded-3xl p-6 h-full flex flex-col">
-        <div className="flex items-center gap-3 mb-4 text-blue-500">
-            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
-              <i className="fa-solid fa-gear text-sm"></i>
-            </div>
-            <h2 className="text-base font-bold text-white">Profile & Security</h2>
+      <div>
+        <div className="mb-6">
+            <h2 className="text-xl font-bold text-white tracking-tight">Profile & Security</h2>
         </div>
-        <p className="text-sm text-gray-400 mb-6 font-medium leading-relaxed flex-1">
-            Manage your personal information, update your display name, and secure your account with a strong password.
-        </p>
-        <button 
-            onClick={props.onMoreClick}
-            className="w-full py-3 bg-white/5 rounded-xl text-white text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all border border-white/10 flex items-center justify-center gap-2 group"
-        >
-            <span>More Settings</span>
-            <i className="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-        </button>
+        <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/5 rounded-3xl p-6 h-full flex flex-col transition-all hover:border-white/10 group">
+            <div className="flex items-center gap-3 mb-4 text-blue-500">
+                <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                <i className="fa-solid fa-user-shield text-sm"></i>
+                </div>
+                <h2 className="text-base font-bold text-white">Bảo mật tài khoản</h2>
+            </div>
+            <p className="text-sm text-gray-400 mb-6 font-medium leading-relaxed flex-1">
+                Quản lý thông tin cá nhân, cập nhật tên hiển thị và bảo mật tài khoản của bạn với mật khẩu mạnh.
+            </p>
+            <button 
+                onClick={props.onMoreClick}
+                className="w-full py-3 bg-white/5 rounded-xl text-white text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all border border-white/10 flex items-center justify-center gap-2 group/btn"
+            >
+                <span>Cài đặt thêm</span>
+                <i className="fa-solid fa-arrow-right group/btn-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
       </div>
     );
   }

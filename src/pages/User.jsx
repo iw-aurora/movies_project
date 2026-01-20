@@ -36,17 +36,17 @@ const User = () => {
 
         <div className="min-h-[500px]">
             {activeTab === 'Overview' && (
-                <div className="flex flex-col lg:flex-row gap-10">
-                    <div className="flex-1 space-y-10">
+                <div className="flex flex-col lg:flex-row gap-10 items-start">
+                    <div className="flex-1 flex flex-col gap-10">
                         <ContinueWatching onViewAllClick={() => setActiveTab('Watch History')} />
-                        <UserList />
+                        <UserList compact={true} onViewAllClick={() => setActiveTab('Favorites')} />
                     </div>
-                    <div className="lg:w-80 shrink-0 space-y-10">
+                    <div className="lg:w-80 shrink-0 flex flex-col gap-10 sticky top-28">
                         <UserComment 
                             isFullView={false} 
                             onViewAllClick={() => setActiveTab('Reviews')}
                         />
-                         <div className="h-[420px]">   
+                         <div>   
                             <ChangePass
                                 compact={true}
                                 onMoreClick={() => setActiveTab('Settings')}

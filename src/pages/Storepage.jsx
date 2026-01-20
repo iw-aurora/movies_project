@@ -202,19 +202,23 @@ const StorePage = () => {
           </div>
 
           <div className="flex items-center gap-4 w-full md:w-auto">
-            <div className="flex bg-black/40 rounded-2xl p-1.5 border border-white/10 flex-grow md:flex-grow-0">
+            <div className="flex bg-gradient-to-br from-black/50 to-black/30 rounded-xl p-1 border border-white/10 backdrop-blur-sm flex-grow md:flex-grow-0 shadow-lg">
               {SORTS.map((s) => (
                 <button
                   key={s.value}
                   onClick={() => setSortBy(s.value)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  title={s.label}
+                  className={`group relative flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 min-w-[44px] ${
                     sortBy === s.value
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-500 hover:text-gray-300"
+                      ? "bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/40 scale-105"
+                      : "text-gray-400 hover:text-white hover:bg-white/10 hover:scale-105"
                   }`}
                 >
-                  <i className={`fa-solid ${s.icon}`}></i>
-                  <span className="hidden lg:inline">{s.label}</span>
+                  {sortBy === s.value && (
+                    <div className="absolute inset-0 rounded-lg bg-white/10 animate-pulse"></div>
+                  )}
+                  <i className={`fa-solid ${s.icon} text-sm relative z-10 transition-transform ${sortBy === s.value ? '' : 'group-hover:scale-110'}`}></i>
+                  <span className="hidden md:inline relative z-10 whitespace-nowrap">{s.label}</span>
                 </button>
               ))}
             </div>
@@ -224,12 +228,13 @@ const StorePage = () => {
                 setTempCategory(selectedCategory);
                 setIsModalOpen(true);
               }}
-              className="bg-white text-black px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3"
+              title="Lọc theo thể loại"
+              className="group relative flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 bg-gradient-to-br from-black/50 to-black/30 border border-white/10 rounded-lg text-xs font-bold backdrop-blur-sm shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white/10 hover:border-blue-500/30"
             >
-              <i className="fa-solid fa-sliders"></i>
-              Thể loại
+              <i className="fa-solid fa-sliders text-sm text-gray-400 group-hover:text-blue-400 transition-colors group-hover:scale-110 transition-transform relative z-10"></i>
+              <span className="hidden md:inline text-gray-300 group-hover:text-white transition-colors relative z-10 whitespace-nowrap">Thể loại</span>
               {selectedCategory !== 'all' && (
-                <span className="bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
+                <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-br from-blue-600 to-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shadow-lg shadow-blue-500/40 animate-pulse z-20">
                   1
                 </span>
               )}
@@ -264,27 +269,30 @@ const StorePage = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-16 mb-8 flex flex-col items-center gap-6">
+              <div className="mt-16 mb-8 flex items-center justify-center">
                 <div className="flex items-center gap-2 flex-wrap justify-center">
+                  {/* Previous page button */}
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="group w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    title="Trang trước"
                   >
-                    <i className="fa-solid fa-chevron-left text-sm"></i>
+                    <i className="fa-solid fa-chevron-left text-sm text-gray-300 group-hover:text-blue-400 transition-colors"></i>
                   </button>
 
+                  {/* Page numbers */}
                   {getPageNumbers().map((page, index) => (
                     page === '...' ? (
-                      <span key={`ellipsis-${index}`} className="px-2 text-gray-600">...</span>
+                      <span key={`ellipsis-${index}`} className="px-2 text-gray-500">…</span>
                     ) : (
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
                         className={`min-w-[40px] h-10 px-3 rounded-lg font-bold text-sm transition-all ${
                           currentPage === page
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300'
+                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                            : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 text-gray-300 hover:text-white'
                         }`}
                       >
                         {page}
@@ -292,31 +300,15 @@ const StorePage = () => {
                     )
                   ))}
 
+                  {/* Next page button */}
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="group w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    title="Trang sau"
                   >
-                    <i className="fa-solid fa-chevron-right text-sm"></i>
+                    <i className="fa-solid fa-chevron-right text-sm text-gray-300 group-hover:text-blue-400 transition-colors"></i>
                   </button>
-                </div>
-
-                {/* Quick jump */}
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 uppercase tracking-wider">Đi đến trang:</span>
-                  <input
-                    type="number"
-                    min="1"
-                    max={totalPages}
-                    value={currentPage}
-                    onChange={(e) => {
-                      const page = parseInt(e.target.value);
-                      if (page >= 1 && page <= totalPages) {
-                        handlePageChange(page);
-                      }
-                    }}
-                    className="w-20 bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-center focus:outline-none focus:border-blue-500"
-                  />
                 </div>
               </div>
             )}
