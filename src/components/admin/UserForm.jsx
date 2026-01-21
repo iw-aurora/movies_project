@@ -49,7 +49,7 @@ const ActionButton = ({ children, onClick, variant = 'secondary', className = ''
     <button
       onClick={loading ? null : onClick}
       disabled={loading}
-      className={`${variants[variant]} text-[10px] font-extrabold uppercase tracking-[0.2em] px-6 py-3 rounded-xl transition-all active:scale-95 ${className} ${loading ? 'opacity-50 cursor-wait' : ''}`}
+      className={`${variants[variant]} text-[9px] md:text-[10px] font-extrabold uppercase tracking-[0.2em] px-4 py-2 md:px-6 md:py-3 rounded-xl transition-all active:scale-95 ${className} ${loading ? 'opacity-50 cursor-wait' : ''}`}
     >
       {loading ? (
         <div className="flex items-center gap-2">

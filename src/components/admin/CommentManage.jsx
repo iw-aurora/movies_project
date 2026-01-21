@@ -67,7 +67,7 @@ const CommentManage = () => {
 
   return (
 
-    <div className="mt-10 bg-zinc-900/20 backdrop-blur-sm rounded-3xl border border-white/5 overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="mt-4 md:mt-10 bg-zinc-900/20 backdrop-blur-sm rounded-3xl border border-white/5 overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* HEADER BAR (Consistent with UserTable) */}
       <div className="px-8 py-6 border-b border-white/5 flex flex-col lg:flex-row lg:items-center justify-between bg-zinc-900/40 gap-4">
@@ -75,7 +75,7 @@ const CommentManage = () => {
            {!selectedMovieId ? (
               <>
                  <div className="w-1.5 h-6 bg-rose-500 rounded-full" />
-                 <h2 className="text-lg font-bold text-white tracking-tight">
+                 <h2 className="text-xs md:text-lg font-bold text-white tracking-tight">
                     Danh sách phim có bình luận
                  </h2>
               </>
@@ -89,7 +89,7 @@ const CommentManage = () => {
                    <ArrowLeft size={16} />
                 </button>
                 <div className="flex flex-col">
-                   <h2 className="text-lg font-bold text-white tracking-tight line-clamp-1">{selectedMovie?.title}</h2>
+                   <h2 className="text-xs md:text-lg font-bold text-white tracking-tight line-clamp-1">{selectedMovie?.title}</h2>
                 </div>
               </>
            )}
@@ -105,8 +105,16 @@ const CommentManage = () => {
               placeholder={!selectedMovieId ? "Tìm kiếm phim..." : "Tìm nội dung, người dùng..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-zinc-950/50 border border-white/5 rounded-2xl pl-11 pr-4 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500/50 outline-none transition-all"
+              className="w-full bg-zinc-950/50 border border-white/5 rounded-2xl pl-11 pr-10 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500/50 outline-none transition-all"
            />
+           {searchTerm && (
+               <button 
+                  onClick={() => setSearchTerm('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 hover:text-white transition-colors"
+               >
+                 <i className="fa-solid fa-xmark"></i>
+               </button>
+           )}
         </div>
       </div>
 

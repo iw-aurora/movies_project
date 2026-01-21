@@ -6,9 +6,7 @@ import Swal from 'sweetalert2';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const searchInputRef = useRef(null);
   const navigate = useNavigate();
   const { user, role } = useAuth();
 
@@ -37,7 +35,7 @@ const Header = () => {
             : "bg-gradient-to-b from-black/90 via-black/40 to-transparent"
       }`}
     >
-      <div className="flex items-center gap-4 lg:gap-12">
+      <div className="flex items-center gap-4 lg:gap-12 relative z-50">
         <div className="flex items-center gap-4">
           <button 
              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -75,40 +73,8 @@ const Header = () => {
         </nav>
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="hidden sm:flex items-center">
-            <div className={`
-                flex items-center overflow-hidden transition-all duration-300 ease-in-out
-                ${isSearchOpen ? 'w-64 opacity-100 mr-4' : 'w-0 opacity-0'}
-            `}>
-                <div className="w-full flex items-center bg-white/10 border border-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
-                    <input
-                        ref={searchInputRef}
-                        type="text"
-                        placeholder="Tìm kiếm..."
-                        className="bg-transparent border-none outline-none text-sm text-white placeholder-gray-400 w-full"
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                navigate(`/store?search=${encodeURIComponent(e.target.value)}`);
-                                setIsSearchOpen(false);
-                                e.target.value = '';
-                            }
-                        }}
-                    />
-                </div>
-            </div>
-            <button 
-                onClick={() => {
-                    setIsSearchOpen(!isSearchOpen);
-                    if (!isSearchOpen) {
-                        setTimeout(() => searchInputRef.current?.focus(), 100);
-                    }
-                }}
-                className="text-gray-400 hover:text-white transition-colors text-lg w-10 h-10 flex items-center justify-center"
-            >
-                <i className="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </div>
+      <div className="flex items-center gap-6 relative z-50">
+
         {/* show login link when no user, otherwise show avatar + logout */}
         {(() => {
           // Hooks lifted to top level
@@ -176,7 +142,13 @@ const Header = () => {
       </div>
 
       {/* MOBILE MENU OVERLAY */}
-      <div className={`fixed inset-0 bg-black z-[45] transition-all duration-500 lg:hidden flex flex-col pt-24 px-8 ${
+      <div 
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setIsMobileMenuOpen(false);
+          }
+        }}
+        className={`fixed inset-0 bg-black/95 backdrop-blur-xl z-[45] transition-all duration-500 lg:hidden flex flex-col pt-24 px-8 ${
         isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
       }`}>
          <div className="flex flex-col gap-6">

@@ -11,15 +11,15 @@ import { Users, UserCheck, UserX, MessageSquare } from "lucide-react";
 
 
 const SummaryCard = ({ title, value, color, icon: Icon }) => (
-  <div className="bg-zinc-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 flex items-center space-x-5 shadow-lg">
-    <div className={`w-12 h-12 rounded-2xl ${color}/10 flex items-center justify-center`}>
-      <Icon className={`w-6 h-6 ${color}`} />
+  <div className="bg-zinc-900/40 backdrop-blur-md p-3 md:p-6 rounded-3xl border border-white/5 flex items-center space-x-3 md:space-x-5 shadow-lg">
+    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-2xl ${color}/10 flex items-center justify-center min-w-[40px] md:min-w-[48px]`}>
+      <Icon className={`w-5 h-5 md:w-6 md:h-6 ${color}`} />
     </div>
     <div className="flex flex-col">
-      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+      <span className="text-[9px] md:text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">
         {title}
       </span>
-      <span className="text-2xl font-black text-white">{value}</span>
+      <span className="text-lg md:text-2xl font-black text-white">{value}</span>
     </div>
   </div>
 );
@@ -247,41 +247,41 @@ const Admin = () => {
       <main className="flex-grow container mx-auto w-full px-4 md:px-8 pt-24 pb-24">
         
         {/* Header & Tabs */}
-        <header className="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
+        <header className="mb-6 md:mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-6 md:gap-8">
             <div className="flex flex-col gap-6">
-                <h1 className="text-3xl md:text-5xl font-black text-white whitespace-nowrap">
+                <h1 className="text-lg md:text-5xl font-black text-white whitespace-nowrap ml-[3px] md:ml-0 uppercase tracking-tighter">
                     ADMIN DASHBOARD
                 </h1>
 
                 {/* TAB NAVIGATION */}
-                <div className="flex p-1 bg-white/5 rounded-2xl border border-white/5 w-full md:w-fit overflow-x-auto">
+                <div className="flex p-0.5 md:p-1 bg-white/5 rounded-2xl border border-white/5 w-fit overflow-x-auto">
                     <button
                         onClick={() => setActiveTab('users')}
-                        className={`px-4 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-widest flex items-center gap-2 md:gap-3 transition-all whitespace-nowrap ${
+                        className={`px-3 md:px-8 py-2 md:py-3 rounded-xl text-[10px] md:text-sm font-black uppercase tracking-widest flex items-center gap-2 md:gap-3 transition-all whitespace-nowrap ${
                             activeTab === 'users' 
                             ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
                             : 'text-gray-500 hover:text-white hover:bg-white/5'
                         }`}
                     >
-                        <Users size={16} className="md:w-[18px] md:h-[18px]" />
+                        <Users size={14} className="md:w-[18px] md:h-[18px]" />
                         Quản lý User
                     </button>
                     <button
                         onClick={() => setActiveTab('comments')}
-                        className={`px-4 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-widest flex items-center gap-2 md:gap-3 transition-all whitespace-nowrap ${
+                        className={`px-3 md:px-8 py-2 md:py-3 rounded-xl text-[10px] md:text-sm font-black uppercase tracking-widest flex items-center gap-2 md:gap-3 transition-all whitespace-nowrap ${
                             activeTab === 'comments' 
                             ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
                             : 'text-gray-500 hover:text-white hover:bg-white/5'
                         }`}
                     >
-                        <MessageSquare size={16} className="md:w-[18px] md:h-[18px]" />
+                        <MessageSquare size={14} className="md:w-[18px] md:h-[18px]" />
                         Quản lý Bình luận
                     </button>
                 </div>
             </div>
  
             {/* RIGHT STATS */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full xl:w-auto animate-in fade-in zoom-in duration-500">
+            <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 md:gap-4 w-full xl:w-auto animate-in fade-in zoom-in duration-500">
                 {activeTab === 'users' ? (
                     <>
                         <SummaryCard
@@ -333,12 +333,12 @@ const Admin = () => {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {activeTab === 'users' ? (
                 <>
-                    <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 animate-in fade-in slide-in-from-bottom-2">
+                    <header className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                    <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
+                    <h1 className="text-xl md:text-5xl font-black text-white uppercase tracking-tighter">
                         Quản lý <span className="text-indigo-500">Người dùng</span>
                     </h1>
-                        <p className="text-zinc-500 mt-2 font-medium">
+                        <p className="text-xs md:text-base text-zinc-500 mt-2 font-medium">
                             Quản lý tài khoản, phân quyền và trạng thái người dùng.
                         </p>
                         </div>

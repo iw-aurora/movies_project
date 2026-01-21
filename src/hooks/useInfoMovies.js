@@ -50,7 +50,7 @@ export const useInfoMovies = (movieId) => {
         setMovieData({
           ...detail,
           director: director?.name || 'Unknown',
-          cast: credits.cast.slice(0, 5),
+          cast: credits.cast.slice(0, 6),
           trailers: videos.results.filter(v => v.site === 'YouTube' && v.type === 'Trailer'),
           similarMovies: similar.results.slice(0, 5)
         });

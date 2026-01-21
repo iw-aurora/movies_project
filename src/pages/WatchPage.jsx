@@ -87,22 +87,23 @@ const WatchPage = () => {
       {/* Spacer for fixed header */}
       <div className="h-20 md:h-24"></div>
 
-      <main className="flex-1 px-4 md:px-12 py-8 container mx-auto w-full">
+      <main className="flex-1 px-2 md:px-12 py-4 md:py-8 container mx-auto w-full">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-[10px] md:text-xs text-gray-600 mb-8 font-black uppercase tracking-widest">
-          <Link to="/" className="hover:text-blue-500 transition-colors">
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-2 text-[9px] text-white/40 mb-6 font-semibold uppercase tracking-[0.2em]">
+          <Link to="/" className="hover:text-white transition-colors">
             Trang chủ
           </Link>
-          <ChevronRight size={12} className="text-gray-800" />
-          <Link to="#" className="hover:text-blue-500 transition-colors">
-            Phim
+          <ChevronRight size={8} className="text-white/20" />
+          <Link to="/store" className="hover:text-white transition-colors">
+            Khám phá
           </Link>
-          <ChevronRight size={12} className="text-gray-800" />
-          <span className="text-gray-400">{movie.title || movie.name}</span>
+          <ChevronRight size={8} className="text-white/20" />
+          <span className="text-white/60 font-bold truncate max-w-[200px] md:max-w-[400px]">{movie.title || movie.name}</span>
         </nav>
 
         {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12">
           {/* Main Content Area */}
           <div className="lg:col-span-8 space-y-10">
             <VidPlayer 

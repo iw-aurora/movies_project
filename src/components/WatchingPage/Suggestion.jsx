@@ -87,10 +87,10 @@ const Suggestion = ({ episodes = [], currentEpisode, onEpisodeSelect, isLoading,
           <h3 className="text-lg font-black text-white uppercase italic tracking-tighter">
             Gợi ý cho bạn
           </h3>
-          <button className="text-[10px] text-blue-500 font-black uppercase tracking-widest hover:text-white flex items-center gap-1 group transition-colors">
+          <button className="text-[9px] md:text-[10px] text-blue-500 font-black uppercase tracking-widest hover:text-white flex items-center gap-1 group transition-colors">
             Xem thêm
             <ChevronRight
-              size={14}
+              size={12}
               className="group-hover:translate-x-1 transition-transform"
             />
           </button>
@@ -101,9 +101,9 @@ const Suggestion = ({ episodes = [], currentEpisode, onEpisodeSelect, isLoading,
             <Link
               to={`/watch/${movie.id}`}
               key={movie.id}
-              className="flex gap-4 p-3 bg-[#0c0c0c] hover:bg-[#141414] border border-white/5 hover:border-blue-500/30 rounded-2xl transition-all duration-300 group cursor-pointer block hover:shadow-lg hover:shadow-blue-500/10"
+              className="flex gap-3 p-2 md:p-3 bg-[#0c0c0c] hover:bg-[#141414] border border-white/5 hover:border-blue-500/30 rounded-xl md:rounded-2xl transition-all duration-300 group cursor-pointer block hover:shadow-lg hover:shadow-blue-500/10"
             >
-              <div className="w-20 h-28 shrink-0 rounded-xl overflow-hidden shadow-xl group-hover:scale-105 transition-all duration-300 bg-zinc-900 border border-white/5 group-hover:border-blue-500/20">
+              <div className="w-12 h-18 md:w-20 md:h-28 shrink-0 rounded-sm md:rounded-xl overflow-hidden shadow-xl group-hover:scale-105 transition-all duration-300 bg-zinc-900 border border-white/5 group-hover:border-blue-500/20">
                 <img
                   src={getPoster(movie.poster_path, "w200")}
                   alt={movie.title || movie.name}
@@ -113,18 +113,18 @@ const Suggestion = ({ episodes = [], currentEpisode, onEpisodeSelect, isLoading,
 
               <div className="flex flex-col justify-between py-1.5 min-w-0">
                 <div className="space-y-1">
-                  <h4 className="text-sm font-black text-white line-clamp-2 leading-tight uppercase group-hover:text-blue-400 transition-colors">
+                  <h4 className="text-[10px] md:text-sm font-black text-white line-clamp-2 leading-tight uppercase group-hover:text-blue-400 transition-colors">
                     {movie.title || movie.name}
                   </h4>
-                  <div className="flex items-center gap-2 text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                  <div className="flex items-center gap-1 text-[8px] md:text-[10px] text-gray-500 font-bold uppercase tracking-wider">
                     <span>{movie.release_date?.slice(0, 4) || 'N/A'}</span>
                     <span className="text-blue-500">•</span>
                     <span className="truncate">Movie</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-blue-400 text-[10px] font-black bg-blue-500/10 self-start px-2.5 py-1 rounded-md group-hover:bg-blue-500/20 transition-colors">
-                  <Star size={10} fill="currentColor" />
+                <div className="flex items-center gap-1 text-blue-400 text-[8px] font-black bg-blue-500/10 self-start px-1.5 py-0.5 md:px-2.5 md:py-1 rounded-md group-hover:bg-blue-500/20 transition-colors">
+                  <Star size={8} fill="currentColor" />
                   <span>{movie.vote_average?.toFixed(1) || 'N/A'}</span>
                 </div>
               </div>

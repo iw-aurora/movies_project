@@ -5,8 +5,8 @@ const TrailerSection = ({ trailers, poster_path }) => {
   // Chỉ lấy tối đa 3 trailer YouTube
   let trailerList = trailers.filter(t => t.site === "YouTube" && t.type === "Trailer");
 
-  // Lấp đầy nếu < 3
-  while (trailerList.length < 3) {
+  // Lấp đầy nếu < 4
+  while (trailerList.length < 4) {
     if (trailerList.length > 0) {
       trailerList.push(trailerList[0]);
     } else {
@@ -21,19 +21,19 @@ const TrailerSection = ({ trailers, poster_path }) => {
   const [selectedIdx, setSelectedIdx] = useState(null); // index ô đang chơi video
 
   return (
-    <section className="py-16 max-w-7xl mx-auto px-6">
-      <h3 className="text-xl font-bold tracking-widest text-gray-400 uppercase mb-10 border-b border-white/10 pb-4 inline-block">
+    <section className="py-4 md:py-16 max-w-7xl mx-auto px-6">
+      <h3 className="text-sm md:text-xl font-bold tracking-widest text-gray-400 uppercase mb-4 md:mb-10 border-b border-white/10 pb-2 md:pb-4 inline-block">
         TRAILER
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
         {trailerList.map((trailer, idx) => {
           const isSelected = selectedIdx === idx && trailer.key;
 
           return (
             <div
               key={idx}
-              className="relative aspect-video rounded-xl overflow-hidden group cursor-pointer shadow-2xl"
+              className={`relative aspect-video rounded-xl overflow-hidden group cursor-pointer shadow-2xl ${idx === 3 ? 'md:hidden' : ''}`}
               onClick={() => trailer.key && setSelectedIdx(idx)}
             >
               {isSelected ? (

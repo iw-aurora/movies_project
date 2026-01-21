@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import MoviesCard from '../components/home/MoviesCard';
 import { HeroSkeleton, MovieCardSkeleton } from '../components/skeleton/Skeletons';
@@ -19,8 +20,18 @@ const GENRE_LIST = [
 
 const SeriesPage = () => {
   const [activeGenre, setActiveGenre] = useState('all');
-  const [tempGenre, setTempGenre] = useState('all');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const [series, setSeries] = useState([]);
   const [featuredSeries, setFeaturedSeries] = useState(null);
   const [page, setPage] = useState(1);
@@ -28,6 +39,7 @@ const SeriesPage = () => {
   const [dataLoading, setDataLoading] = useState(true);
   const [minLoading, setMinLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
 
   const loadSeries = async (currentPage, genreId, isLoadMore = false) => {
     try {
@@ -86,10 +98,10 @@ const SeriesPage = () => {
     loadSeries(nextPage, activeGenre, true);
   };
 
-  const handleApplyFilter = () => {
-    setActiveGenre(tempGenre);
-    setIsModalOpen(false);
-    window.scrollTo({ top: 500, behavior: 'smooth' });
+  const handleGenreChange = (genreId) => {
+    setActiveGenre(genreId);
+    setIsDropdownOpen(false);
+    window.scrollTo({ top: 400, behavior: 'smooth' });
   };
 
   const activeGenreName =
@@ -120,7 +132,7 @@ const SeriesPage = () => {
   return (
     <main className="min-h-screen pb-20 bg-[#111112] text-white">
       {/* Hero Section */}
-      <section className="relative h-[85vh] w-full overflow-hidden">
+      <section className="relative h-[50vh] md:h-[95vh] w-full overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={
@@ -129,13 +141,13 @@ const SeriesPage = () => {
                 : 'https://picsum.photos/seed/series/1920/1080'
             }
             alt={featuredSeries?.name || 'Featured'}
-            className="w-full h-full object-cover scale-105 animate-slow-zoom"
+            className="w-full h-full object-cover object-[center_10%] md:object-center scale-105 animate-slow-zoom"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#111112] via-[#111112]/60 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#111112] via-transparent to-black/20" />
         </div>
 
-        <div className="relative h-full flex items-center container mx-auto px-8">
+        <div className="relative h-full flex items-center container mx-auto px-4 md:px-8">
           <div className="max-w-2xl space-y-6">
             <div className="flex items-center gap-3">
               <span className="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">
@@ -150,11 +162,11 @@ const SeriesPage = () => {
               </span>
             </div>
 
-            <h1 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-tight drop-shadow-2xl">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-tight drop-shadow-2xl">
               {featuredSeries?.name || 'KHO PHIM BỘ ĐẶC SẮC'}
             </h1>
 
-            <p className="text-lg text-gray-300 line-clamp-3 font-medium max-w-xl leading-relaxed">
+            <p className="text-sm md:text-lg text-gray-300 line-clamp-2 md:line-clamp-3 font-medium max-w-xl leading-relaxed">
               {featuredSeries?.overview ||
                 'Tuyển tập những bộ phim truyền hình, phim bộ mới nhất và hay nhất từ khắp nơi trên thế giới.'}
             </p>
@@ -163,7 +175,7 @@ const SeriesPage = () => {
               <div className="flex items-center gap-4 pt-4">
                 <Link
                   to={`/watch/${featuredSeries.id}`}
-                  className="bg-white text-black px-8 py-4 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-3 shadow-2xl active:scale-95 text-lg"
+                  className="bg-white text-black px-4 py-2 md:px-8 md:py-4 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-2 md:gap-3 shadow-2xl active:scale-95 text-xs md:text-lg"
                 >
                   <i className="fa-solid fa-play"></i>
                   Xem ngay
@@ -171,7 +183,7 @@ const SeriesPage = () => {
 
                 <Link
                   to={`/series/${featuredSeries.id}`}
-                  className="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-3 border border-white/10 active:scale-95 text-lg"
+                  className="bg-white/10 backdrop-blur-md text-white px-4 py-2 md:px-8 md:py-4 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-2 md:gap-3 border border-white/10 active:scale-95 text-xs md:text-lg"
                 >
                   <i className="fa-solid fa-circle-info"></i>
                   Chi tiết
@@ -183,7 +195,7 @@ const SeriesPage = () => {
       </section>
 
       {/* Filter & Listing */}
-      <section className="px-4 md:px-8 mt-12 container mx-auto">
+      <section className="px-4 md:px-8 mt-6 md:mt-12 container mx-auto">
         <div className="flex flex-col gap-6 mb-12">
           {/* Title Section */}
           <div>
@@ -196,12 +208,12 @@ const SeriesPage = () => {
           </div>
 
           {/* Filter Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 md:p-6 bg-white/[0.02] border border-white/5 rounded-2xl backdrop-blur-sm">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-xs md:text-sm text-gray-400 font-medium">Thể loại:</span>
-              <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 md:p-4 bg-white/[0.02] border border-white/5 rounded-lg backdrop-blur-sm">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <span className="text-xs md:text-sm text-gray-400 font-normal">Thể loại:</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                 <i className="fa-solid fa-tv text-blue-500 text-sm"></i>
-                <span className="text-sm md:text-base font-bold text-blue-500">{activeGenreName}</span>
+                <span className="text-sm md:text-base font-semibold text-blue-500">{activeGenreName}</span>
               </div>
               {activeGenre !== 'all' && (
                 <button
@@ -217,17 +229,43 @@ const SeriesPage = () => {
               )}
             </div>
             
-            <button
-              onClick={() => {
-                setTempGenre(activeGenre);
-                setIsModalOpen(true);
-              }}
-              className="bg-white text-black px-4 md:px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-blue-500 hover:text-white transition-all active:scale-95 shadow-lg"
-            >
-              <i className="fa-solid fa-sliders"></i>
-              <span className="hidden sm:inline">Chọn thể loại</span>
-              <span className="sm:hidden">Bộ lọc</span>
-            </button>
+            <div className="relative z-40 w-fit self-start" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="bg-white text-black px-2.5 md:px-5 h-[30px] md:h-[44px] rounded-lg font-semibold text-[10px] md:text-xs uppercase tracking-wide flex items-center justify-center gap-2 md:gap-2.5 hover:bg-blue-500 hover:text-white transition-all active:scale-95 shadow-md"
+              >
+                <i className="fa-solid fa-sliders"></i>
+                <span className="hidden sm:inline">Chọn thể loại</span>
+                <span className="sm:hidden">Bộ lọc</span>
+                <i className={`fa-solid fa-chevron-down text-[10px] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}></i>
+              </button>
+
+              {/* Dropdown Menu - Native Absolute (No Portal) */}
+              {isDropdownOpen && (
+                  <div 
+                    className="absolute top-full left-0 mt-2 w-64 bg-[#0f0f0f] border border-white/10 rounded-lg shadow-2xl z-[45] overflow-hidden animate-in fade-in zoom-in duration-200"
+                  >
+                    <div className="p-1.5 max-h-[400px] overflow-y-auto custom-scrollbar">
+                      {GENRE_LIST.map((genre) => (
+                        <button
+                          key={genre.id}
+                          onClick={() => handleGenreChange(genre.id)}
+                          className={`w-full text-left px-3 py-2.5 rounded-md transition-all text-sm font-medium flex items-center justify-between mb-0.5 last:mb-0 ${
+                            activeGenre === genre.id
+                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                              : "text-gray-300 hover:bg-white/10 hover:text-white"
+                          }`}
+                        >
+                          <span>{genre.name}</span>
+                          {activeGenre === genre.id && (
+                            <i className="fa-solid fa-check text-xs"></i>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -268,61 +306,6 @@ const SeriesPage = () => {
           </div>
         )}
       </section>
-
-      {/* MODAL */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-black/95 backdrop-blur-sm">
-          <div className="w-full max-w-5xl bg-[#0f0f0f] rounded-3xl p-6 md:p-10 border border-white/10 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-2xl md:text-4xl font-black uppercase italic">
-                Chọn <span className="text-blue-500">Thể loại</span>
-              </h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
-              >
-                <i className="fa-solid fa-xmark text-white"></i>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
-              {GENRE_LIST.map(genre => (
-                <button
-                  key={genre.id}
-                  onClick={() => setTempGenre(genre.id)}
-                  className={`group relative p-4 md:p-6 rounded-2xl font-bold transition-all text-sm md:text-base ${
-                    tempGenre === genre.id
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 scale-105'
-                      : 'bg-black border border-white/10 text-gray-400 hover:bg-white/5 hover:border-white/20 hover:text-white'
-                  }`}
-                >
-                  {tempGenre === genre.id && (
-                    <div className="absolute top-2 right-2">
-                      <i className="fa-solid fa-circle-check text-white text-sm"></i>
-                    </div>
-                  )}
-                  <span className="block">{genre.name}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-white/5">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-6 md:px-8 py-3 md:py-4 text-gray-400 hover:text-white transition-colors font-bold rounded-xl hover:bg-white/5"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleApplyFilter}
-                className="px-8 md:px-10 py-3 md:py-4 bg-white text-black font-black rounded-2xl hover:bg-blue-500 hover:text-white transition-all shadow-lg active:scale-95"
-              >
-                Áp dụng
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </main>
   );
 };

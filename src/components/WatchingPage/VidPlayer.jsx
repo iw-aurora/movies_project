@@ -49,7 +49,7 @@ const VidPlayer = ({ trailerUrl, movie, backdropUrl }) => {
   if (!movie) return null;
 
   return (
-    <div className="relative group aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl ring-1 ring-blue-500/20">
+    <div className="relative group aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl ring-1 ring-blue-500/20">
       {!isStarted ? (
         <div
           className="absolute inset-0 cursor-pointer"
@@ -61,13 +61,13 @@ const VidPlayer = ({ trailerUrl, movie, backdropUrl }) => {
             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-60 grayscale group-hover:grayscale-0"
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <button className="w-20 h-20 md:w-24 md:h-24 bg-blue-600 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform hover:bg-blue-500 group-hover:shadow-blue-500/60">
-              <Play fill="white" className="text-white ml-1" size={36} />
+            <button className="w-8 h-8 md:w-24 md:h-24 bg-blue-600 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform hover:bg-blue-500 group-hover:shadow-blue-500/60">
+              <Play fill="white" className="text-white ml-0.5 w-3 h-3 md:w-9 md:h-9" />
             </button>
           </div>
-          <div className="absolute bottom-10 left-10 right-10 flex flex-col gap-2">
-            <span className="text-blue-500 font-black text-xs uppercase tracking-[0.3em]">Now Playing</span>
-            <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter">{movie.title || movie.name}</h2>
+          <div className="absolute bottom-2 left-3 right-3 md:bottom-10 md:left-10 md:right-10 flex flex-col gap-0.5 md:gap-2">
+            <span className="text-blue-500 font-black text-[6px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em]">Now Playing</span>
+            <h2 className="text-xs md:text-4xl font-black text-white uppercase italic tracking-tighter line-clamp-1">{movie.title || movie.name}</h2>
           </div>
         </div>
       ) : (

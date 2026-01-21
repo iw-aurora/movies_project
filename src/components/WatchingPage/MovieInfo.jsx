@@ -341,37 +341,38 @@ const MovieInfo = ({ movie }) => {
   if (!movie) return null;
 
   return (
-    <div className="space-y-10 pb-20">
+    <div className="space-y-4 md:space-y-10 pb-20">
       {/* Player Controls */}
-      <section className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 backdrop-blur-sm space-y-6">
+      <section className="bg-white/[0.02] border border-white/5 rounded-2xl md:rounded-3xl p-3 md:p-6 backdrop-blur-sm space-y-4 md:space-y-6">
         {/* Row 1: Controls (Server, Auto Play, Favorite) */}
-        <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
-            {/* Left: Server Selection */}
-           <div className="flex flex-col gap-3 w-full md:w-auto">
-              <div className="flex items-center gap-2 text-[10px] text-gray-500 font-black uppercase tracking-widest px-1">
-                 <Database size={12} className="text-blue-500" /> Chọn Server
-              </div>
-              <div className="flex gap-2">
-                 {['Server VIP', 'Backup 1', 'Backup 2'].map(server => (
-                   <button
-                     key={server}
-                     onClick={() => setActiveServer(server)}
-                     className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeServer === server ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white/5 text-gray-500 hover:bg-white/10 hover:text-white'}`}
-                   >
-                     {server}
-                   </button>
-                 ))}
+        {/* Row 1: Controls (Server + Actions) */}
+        <div className="flex flex-col md:flex-row gap-3 md:gap-6 justify-between">
+           {/* Line 1: Server Selection */}
+           <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto no-scrollbar pb-1 md:pb-0">
+              <span className="hidden md:flex items-center gap-2 text-[10px] text-gray-500 font-black uppercase tracking-widest px-1 mr-2 shrink-0">
+                 <Database size={12} className="text-blue-500" /> Server
+              </span>
+              <div className="flex gap-1.5 w-full md:w-auto">
+                {['Server VIP', 'Backup 1', 'Backup 2'].map(server => (
+                  <button
+                    key={server}
+                    onClick={() => setActiveServer(server)}
+                    className={`flex-1 md:flex-none px-1.5 py-1 md:px-5 md:py-2.5 rounded-md md:rounded-xl text-[7px] md:text-xs font-black uppercase tracking-widest whitespace-nowrap transition-all ${activeServer === server ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white/5 text-gray-500 hover:bg-white/10 hover:text-white'}`}
+                  >
+                    {server}
+                  </button>
+                ))}
               </div>
            </div>
 
-           {/* Right: Actions (Auto Play, Favorite) */}
-           <div className="flex items-center gap-4 w-full md:w-auto">
+           {/* Line 2: Actions (Auto Play, Favorite) */}
+           <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto">
                 {/* Auto Play Toggle */}
-                <div className="flex items-center gap-3 bg-black/40 px-4 py-2.5 rounded-xl border border-white/5">
-                    <span className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Auto Play</span>
+                <div className="flex-1 md:flex-none flex items-center justify-between md:justify-start gap-1.5 bg-black/40 px-2 py-1 md:px-4 md:py-2.5 rounded-md md:rounded-xl border border-white/5">
+                    <span className="text-[7px] md:text-[10px] font-black uppercase text-gray-500 tracking-wider">Auto Play</span>
                     <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-9 h-5 bg-gray-700/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600 peer-checked:after:bg-white"></div>
+                    <div className="w-7 h-3.5 md:w-9 md:h-5 bg-gray-700/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-2.5 after:w-2.5 md:after:h-4 md:after:w-4 after:transition-all peer-checked:bg-blue-600 peer-checked:after:bg-white"></div>
                     </label>
                 </div>
 
@@ -379,9 +380,9 @@ const MovieInfo = ({ movie }) => {
                 <button 
                     onClick={toggleFavorite}
                     title={isFavorite ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isFavorite ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/5'}`}
+                    className={`w-7 h-7 md:w-12 md:h-12 shrink-0 rounded-md md:rounded-xl flex items-center justify-center transition-all ${isFavorite ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/5'}`}
                 >
-                    <Heart size={20} fill={isFavorite ? "currentColor" : "none"} className={isFavorite ? "animate-pulse" : ""} />
+                    <Heart size={12} md:size={20} fill={isFavorite ? "currentColor" : "none"} className={isFavorite ? "animate-pulse" : ""} />
                 </button>
            </div>
         </div>
@@ -392,8 +393,8 @@ const MovieInfo = ({ movie }) => {
               <div className="flex items-center gap-2 text-[10px] text-gray-500 font-black uppercase tracking-widest px-1">
                  <Layers size={12} className="text-blue-500" /> Danh sách tập
               </div>
-              <div className="flex gap-2">
-                 <button className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-600/20">
+              <div className="flex gap-1.5">
+                 <button className="px-3 py-1.5 md:px-5 md:py-2.5 bg-blue-600 text-white rounded-md md:rounded-xl text-[9px] md:text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-600/20">
                     Tập 1
                  </button>
               </div>
@@ -402,45 +403,45 @@ const MovieInfo = ({ movie }) => {
       </section>
 
       {/* Movie Meta Info Card */}
-      <section className="bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-sm">
-        <div className="flex flex-col md:flex-row gap-8">
-          <div className="flex-1 space-y-6">
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase">{movie.title || movie.name}</h1>
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-600/20 text-blue-500 rounded-lg text-xs font-black">
-                <Star size={12} fill="currentColor" />
+      <section className="bg-white/[0.02] border border-white/5 rounded-2xl md:rounded-3xl p-2.5 md:p-8 backdrop-blur-sm">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+          <div className="flex-1 space-y-3 md:space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
+              <h1 className="text-[10px] md:text-3xl font-black text-white italic tracking-tighter uppercase line-clamp-2">{movie.title || movie.name}</h1>
+              <div className="flex items-center gap-0.5 px-1 py-0.5 md:px-3 md:py-1 bg-blue-600/20 text-blue-500 rounded-md text-[7px] md:text-xs font-black w-fit">
+                <Star size={7} fill="currentColor" />
                 {statsSummary.average}
               </div>
             </div>
             
-            <p className="text-gray-400 text-lg leading-relaxed font-medium italic">
+            <p className="text-gray-400 text-[9px] md:text-lg leading-relaxed font-medium italic line-clamp-3">
               {movie.overview}
             </p>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
-               <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                  <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">
-                    <Clock size={12} /> Thời lượng
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-1 md:gap-6 pt-1 md:pt-4">
+               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
+                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
+                    <Clock size={7} className="md:w-3 md:h-3" /> Duration
                   </div>
-                  <div className="text-white font-black">{movie.runtime || movie.episode_run_time?.[0] || 'N/A'} Phút</div>
+                  <div className="text-white text-[8px] md:text-base font-black truncate">{movie.runtime || movie.episode_run_time?.[0] || 'N/A'} min</div>
                </div>
-               <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                  <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">
-                    <Star size={12} /> Đánh giá
+               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
+                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
+                    <Star size={7} className="md:w-3 md:h-3" /> Rating
                   </div>
-                  <div className="text-white font-black">{statsSummary.total} Lượt</div>
+                  <div className="text-white text-[8px] md:text-base font-black truncate">{statsSummary.total} Reviews</div>
                </div>
-               <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                  <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">
-                    <Globe size={12} /> Quốc gia
+               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
+                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
+                    <Globe size={7} className="md:w-3 md:h-3" /> Origin
                   </div>
-                  <div className="text-white font-black truncate">{movie.production_countries?.[0]?.name || 'N/A'}</div>
+                  <div className="text-white text-[8px] md:text-base font-black truncate">{movie.production_countries?.[0]?.name || 'N/A'}</div>
                </div>
-               <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                  <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">
-                    <Star size={12} /> Thể loại
+               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
+                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
+                    <Star size={7} className="md:w-3 md:h-3" /> Genre
                   </div>
-                  <div className="text-white font-black truncate">{movie.genres?.[0]?.name || 'Phim'}</div>
+                  <div className="text-white text-[8px] md:text-base font-black truncate">{movie.genres?.[0]?.name || 'Movie'}</div>
                </div>
             </div>
           </div>
@@ -450,36 +451,37 @@ const MovieInfo = ({ movie }) => {
       {/* Ratings & Reviews Section - Redesigned */}
       <div className="max-w-5xl mx-auto space-y-10">
          
-         <div className="flex items-center gap-4 mb-2 pb-4 border-b border-white/5">
-             <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Bình luận & Đánh giá</h2>
-             <span className="text-sm text-gray-500 font-medium">(Audience Reviews)</span>
+         <div className="flex items-center gap-2 md:gap-4 mb-2 pb-2 md:pb-4 border-b border-white/5">
+             <h2 className="text-xl md:text-3xl font-black text-white uppercase italic tracking-tighter">Bình luận & Đánh giá</h2>
+             <span className="text-xs md:text-sm text-gray-500 font-medium">(Audience Reviews)</span>
          </div>
 
          {/* 1. Stats Card */}
-         <div className="bg-[#1a1a1a] rounded-[2rem] p-8 md:p-10 flex flex-col md:flex-row gap-10 md:gap-20 item-center shadow-2xl border border-white/5">
+         {/* 1. Stats Card */}
+         <div className="bg-[#1a1a1a] rounded-[2rem] p-4 md:p-8 flex flex-col md:flex-row gap-4 md:gap-12 item-center shadow-2xl border border-white/5">
              {/* Left: Big Score */}
-             <div className="flex flex-col items-center justify-center min-w-[200px] text-center">
-                 <div className="text-[5rem] leading-none font-black text-white mb-2 tracking-tighter shadow-blue-500/50 drop-shadow-2xl">{statsSummary.average}</div>
-                 <div className="flex gap-1.5 text-red-500 mb-2">
+             <div className="flex flex-col items-center justify-center min-w-[140px] text-center">
+                 <div className="text-4xl md:text-6xl leading-none font-black text-white mb-2 tracking-tighter shadow-blue-500/50 drop-shadow-2xl">{statsSummary.average}</div>
+                 <div className="flex gap-1 mb-2">
                     {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={20} fill={i < Math.round(Number(statsSummary.average)) ? "currentColor" : "none"} />
+                        <Star key={i} size={16} fill={i < Math.round(Number(statsSummary.average)) ? "#ef4444" : "none"} className={i < Math.round(Number(statsSummary.average)) ? "text-red-500" : "text-gray-700"} />
                     ))}
                  </div>
-                 <div className="text-gray-500 text-sm font-bold uppercase tracking-widest">{statsSummary.total} Reviews</div>
+                 <div className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">{statsSummary.total} Reviews</div>
              </div>
 
              {/* Right: Progress Bars */}
-             <div className="flex-1 space-y-3 w-full justify-center flex flex-col">
+             <div className="flex-1 space-y-1 md:space-y-2 w-full justify-center flex flex-col">
                 {statsSummary.breakdown.map((item) => (
-                    <div key={item.stars} className="flex items-center gap-4">
-                        <span className="text-sm font-bold text-gray-400 w-3">{item.stars}</span>
-                        <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden">
+                    <div key={item.stars} className="flex items-center gap-3">
+                        <span className="text-[10px] md:text-xs font-bold text-gray-400 w-3">{item.stars}</span>
+                        <div className="flex-1 h-1 md:h-2 bg-white/5 rounded-full overflow-hidden">
                             <div 
                                 className="h-full bg-gradient-to-r from-red-600 to-red-500 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]" 
                                 style={{ width: `${item.percentage}%` }}
                             />
                         </div>
-                        <span className="text-sm font-bold text-gray-500 w-10 text-right">{item.percentage}%</span>
+                        <span className="text-[10px] md:text-xs font-bold text-gray-500 w-8 text-right">{item.percentage}%</span>
                     </div>
                 ))}
              </div>
@@ -501,10 +503,10 @@ const MovieInfo = ({ movie }) => {
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                         placeholder="Bạn nghĩ gì về bộ phim này? Hãy chia sẻ suy nghĩ của bạn..." 
-                        className="w-full bg-transparent border-none p-6 text-base text-gray-200 placeholder:text-gray-600 focus:ring-0 min-h-[120px] resize-none"
+                        className="w-full bg-transparent border-none p-4 md:p-6 text-sm md:text-base text-gray-200 placeholder:text-gray-600 focus:ring-0 min-h-[80px] md:min-h-[120px] resize-none"
                     />
                     
-                    <div className="bg-[#151515] px-6 py-4 flex items-center justify-between border-t border-white/5">
+                    <div className="bg-[#151515] px-4 py-3 md:px-6 md:py-4 flex items-center justify-between border-t border-white/5">
                         <div className="flex items-center gap-4">
                            <div className="hidden md:flex items-center gap-2">
                               {[1, 2, 3, 4, 5].map((star) => (
@@ -521,19 +523,19 @@ const MovieInfo = ({ movie }) => {
                            <span className="text-xs text-gray-500 font-medium hidden md:block">{userRating > 0 ? `${userRating} Stars` : 'Rate this movie'}</span>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                            <label className="flex items-center gap-2 cursor-pointer group">
-                                <div className={`w-4 h-4 border rounded transition-colors flex items-center justify-center ${containsSpoilers ? 'bg-red-500 border-red-500' : 'border-gray-600 group-hover:border-gray-400'}`}>
-                                    {containsSpoilers && <EyeOff size={10} className="text-white" />}
+                        <div className="flex items-center gap-3 md:gap-6">
+                            <label className="flex items-center gap-1.5 cursor-pointer group">
+                                <div className={`w-3.5 h-3.5 border rounded transition-colors flex items-center justify-center ${containsSpoilers ? 'bg-red-500 border-red-500' : 'border-gray-600 group-hover:border-gray-400'}`}>
+                                    {containsSpoilers && <EyeOff size={8} className="text-white" />}
                                 </div>
                                 <input type="checkbox" checked={containsSpoilers} onChange={() => setContainsSpoilers(!containsSpoilers)} className="hidden" />
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider group-hover:text-gray-300 transition-colors">Contains Spoilers</span>
+                                <span className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wider group-hover:text-gray-300 transition-colors">Contains Spoilers</span>
                             </label>
 
                             <button 
                                 type="submit"
                                 disabled={!commentText.trim() || isSending || !user}
-                                className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold uppercase tracking-wider hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] disabled:opacity-50 disabled:shadow-none"
+                                className="bg-red-600 text-white px-4 py-1.5 md:px-6 md:py-2 rounded-lg text-[11px] md:text-sm font-bold uppercase tracking-wider hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] disabled:opacity-50 disabled:shadow-none"
                             > 
                                 {isSending ? 'Posting...' : 'Post'}
                             </button>
@@ -551,7 +553,7 @@ const MovieInfo = ({ movie }) => {
                         <button
                           key={sort}
                           onClick={() => setActiveSort(sort)}
-                          className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all border ${activeSort === sort ? 'bg-red-600 border-red-600 text-white' : 'bg-transparent border-white/10 text-gray-500 hover:text-white hover:border-white/30'}`}
+                          className={`px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all border ${activeSort === sort ? 'bg-red-600 border-red-600 text-white' : 'bg-transparent border-white/10 text-gray-500 hover:text-white hover:border-white/30'}`}
                         >
                           {sort}
                         </button>
@@ -570,7 +572,7 @@ const MovieInfo = ({ movie }) => {
                     </div>
                 ) : (
                     sortedComments.slice(0, visibleCommentsCount).map(comment => (
-                        <div key={comment.id} id={`comment-${comment.id}`} className="flex gap-4 md:gap-6 group">
+                        <div key={comment.id} id={`comment-${comment.id}`} className="flex gap-3 md:gap-6 group">
                             <div className="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden shrink-0 border border-white/10">
                                 <img 
                                     src={comment.userAvatar} 
@@ -579,8 +581,8 @@ const MovieInfo = ({ movie }) => {
                                     alt="" 
                                 />
                             </div>
-                            <div className="flex-1 border-b border-white/5 pb-6">
-                                <div className="flex items-center gap-2 mb-2">
+                            <div className="flex-1 border-b border-white/5 pb-3 md:pb-6">
+                                <div className="flex items-center gap-2 mb-1 md:mb-2">
                                     <span className="text-sm font-bold text-white">{comment.userName}</span>
                                     {Number(comment.rating) > 0 && (
                                         <div className="flex text-yellow-500">
@@ -593,11 +595,11 @@ const MovieInfo = ({ movie }) => {
                                     {comment.hasSpoiler && <span className="text-[9px] bg-red-900/50 text-red-500 px-1.5 py-0.5 rounded border border-red-500/20 font-bold uppercase tracking-wider">Spoiler</span>}
                                 </div>
 
-                                <div className="relative mb-3">
+                                <div className="relative mb-2 md:mb-3">
                                     {comment.hasSpoiler && !revealedSpoilers.has(comment.id) ? (
                                         <div 
                                             onClick={() => toggleSpoiler(comment.id)} 
-                                            className="bg-[#1c1c1c] border border-red-900/30 rounded-lg p-8 text-center cursor-pointer hover:bg-[#222] transition-colors group/spoiler relative overflow-hidden"
+                                            className="bg-[#1c1c1c] border border-red-900/30 rounded-lg p-4 md:p-8 text-center cursor-pointer hover:bg-[#222] transition-colors group/spoiler relative overflow-hidden"
                                         >
                                             <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
                                                 <EyeOff size={100} />
@@ -625,7 +627,7 @@ const MovieInfo = ({ movie }) => {
 
                                 {/* Replies */}
                                 {comment.replies?.length > 0 && (
-                                    <div className="mt-6 space-y-4 pl-4 border-l-2 border-white/5">
+                                    <div className="mt-3 md:mt-6 space-y-4 pl-4 border-l-2 border-white/5">
                                         {comment.replies.map((reply, rid) => (
                                             <div key={rid} className="flex gap-4">
                                                 <img src={reply.userAvatar} className="w-8 h-8 rounded-full object-cover bg-zinc-800" alt="" />

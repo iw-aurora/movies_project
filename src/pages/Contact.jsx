@@ -77,15 +77,15 @@ const Contact = () => {
   if (loading) {
      return (
         <div className="pt-20 min-h-screen bg-[#111112] text-zinc-100 overflow-x-hidden">
-             <section className="px-20 py-12 container mx-auto text-center space-y-4">
+             <section className="px-[5px] md:px-20 py-12 container mx-auto text-center space-y-4">
                   <div className="h-10 w-48 bg-zinc-800 rounded-lg animate-pulse mx-auto"></div>
                   <div className="h-4 w-2/3 bg-zinc-800 rounded animate-pulse mx-auto"></div>
              </section>
 
              <div className="container mx-auto px-4">
                   <div className="bg-white/[0.02] border border-white/5 p-5 rounded-2xl h-[400px] animate-pulse mb-6"></div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-                       {[1,2,3].map(i => <div key={i} className="h-32 bg-zinc-800 rounded-xl animate-pulse"></div>)}
+                  <div className="grid grid-cols-3 gap-2 md:gap-3 mb-6">
+                       {[1,2,3].map(i => <div key={i} className="h-24 md:h-32 bg-zinc-800 rounded-xl animate-pulse"></div>)}
                   </div>
              </div>
 
@@ -99,7 +99,7 @@ const Contact = () => {
   return (
     <div className="pt-20 min-h-screen bg-[#111112] text-zinc-100 overflow-x-hidden">
       {/* Introduction Section */}
-      <section className="px-20 py-12 container mx-auto">
+      <section className="px-[5px] md:px-20 py-12 container mx-auto">
         <div className="mb-6 animate-fade-in-up text-center">
           <h1 className="text-3xl md:text-4xl font-black mb-4 uppercase italic tracking-tighter">
             Moon<span className="text-blue-500">Play</span>
@@ -154,29 +154,29 @@ const Contact = () => {
             </div>
 
             {/* Quick Info Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-              <div className="bg-white/[0.02] border border-white/5 p-4 rounded-xl text-center">
-                <div className="w-10 h-10 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <i className="fa-solid fa-clock text-blue-500 text-lg"></i>
+            <div className="grid grid-cols-3 gap-2 md:gap-3 mb-6">
+              <div className="bg-white/[0.02] border border-white/5 p-2 md:p-4 rounded-xl text-center">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                  <i className="fa-solid fa-clock text-blue-500 text-sm md:text-lg"></i>
                 </div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Phản hồi</p>
-                <p className="text-sm font-black text-white">24/7</p>
+                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 md:mb-1">Phản hồi</p>
+                <p className="text-xs md:text-sm font-black text-white">24/7</p>
               </div>
               
-              <div className="bg-white/[0.02] border border-white/5 p-4 rounded-xl text-center">
-                <div className="w-10 h-10 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <i className="fa-solid fa-users text-green-500 text-lg"></i>
+              <div className="bg-white/[0.02] border border-white/5 p-2 md:p-4 rounded-xl text-center">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                  <i className="fa-solid fa-users text-green-500 text-sm md:text-lg"></i>
                 </div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Người dùng</p>
-                <p className="text-sm font-black text-white">10,000+</p>
+                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 md:mb-1">Người dùng</p>
+                <p className="text-xs md:text-sm font-black text-white">10k+</p>
               </div>
               
-              <div className="bg-white/[0.02] border border-white/5 p-4 rounded-xl text-center">
-                <div className="w-10 h-10 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <i className="fa-solid fa-film text-purple-500 text-lg"></i>
+              <div className="bg-white/[0.02] border border-white/5 p-2 md:p-4 rounded-xl text-center">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+                  <i className="fa-solid fa-film text-purple-500 text-sm md:text-lg"></i>
                 </div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Phim</p>
-                <p className="text-sm font-black text-white">50,000+</p>
+                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 md:mb-1">Phim</p>
+                <p className="text-xs md:text-sm font-black text-white">50k+</p>
               </div>
             </div>
 

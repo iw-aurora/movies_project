@@ -1,14 +1,13 @@
 import React from 'react';
 import ProfileHero from '../components/user/ProfileHero';
-import ContinueWatching from '../components/user/ContinueWatching';
 import UserList from '../components/user/UserList';
 import UserComment from '../components/user/UserComment';
 import ChangePass from '../components/user/ChangePass';
 
 
 const User = () => {
-  const tabs = ['Overview', 'Favorites', 'Watch History', 'Reviews', 'Settings'];
-  const [activeTab, setActiveTab] = React.useState('Overview');
+  const tabs = ['Favorites', 'Reviews', 'Settings'];
+  const [activeTab, setActiveTab] = React.useState('Favorites');
 
   return (
     <>
@@ -35,35 +34,13 @@ const User = () => {
         </nav>
 
         <div className="min-h-[500px]">
-            {activeTab === 'Overview' && (
-                <div className="flex flex-col lg:flex-row gap-10 items-start">
-                    <div className="flex-1 flex flex-col gap-10">
-                        <ContinueWatching onViewAllClick={() => setActiveTab('Watch History')} />
-                        <UserList compact={true} onViewAllClick={() => setActiveTab('Favorites')} />
-                    </div>
-                    <div className="lg:w-80 shrink-0 flex flex-col gap-10 sticky top-28">
-                        <UserComment 
-                            isFullView={false} 
-                            onViewAllClick={() => setActiveTab('Reviews')}
-                        />
-                         <div>   
-                            <ChangePass
-                                compact={true}
-                                onMoreClick={() => setActiveTab('Settings')}
-                            />
-                        </div>
-                       
-                    </div>
-                </div>
-            )}
+
 
             {activeTab === 'Favorites' && (
                 <UserList />
             )}
 
-            {activeTab === 'Watch History' && (
-                <ContinueWatching />
-            )}
+
 
             {activeTab === 'Reviews' && (
                 <div className="w-full">
