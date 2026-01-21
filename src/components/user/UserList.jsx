@@ -3,8 +3,9 @@ import { useAuth } from '../../Context/AuthContext';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import MoviesCard from '../home/MoviesCard';
-import { Loader2, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { UserListSkeleton } from '../skeleton/Skeletons';
 
 const UserList = ({ compact = false, onViewAllClick }) => {
   const { user } = useAuth();
@@ -45,11 +46,7 @@ const UserList = ({ compact = false, onViewAllClick }) => {
   const displayMovies = compact ? movies.slice(0, 5) : movies;
 
   if (loading) {
-      return (
-          <div className="flex justify-center py-12">
-              <Loader2 className="animate-spin text-blue-500" size={32} />
-          </div>
-      );
+      return <UserListSkeleton />;
   }
 
   if (!user) return null;

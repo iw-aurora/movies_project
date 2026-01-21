@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from '../../Context/AuthContext';
 import { getUserProfile, updateUser, uploadUserAvatar, getUserStats } from "../../firebase/UserService";
 import { updateProfile } from "firebase/auth";
+import { ProfileHeroSkeleton } from '../skeleton/Skeletons';
 
 const ProfileHero = ({ onEditProfileClick }) => {
   const { user, setUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ favorites: 0, history: 0, comments: 0 });
   const [greeting, setGreeting] = useState('');
   const fileInputRef = useRef(null);
@@ -23,7 +25,11 @@ const ProfileHero = ({ onEditProfileClick }) => {
           setStats(statistics);
         } catch (error) {
           console.error("Error fetching user profile:", error);
+        } finally {
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     };
 
@@ -63,8 +69,12 @@ const ProfileHero = ({ onEditProfileClick }) => {
     ? new Date(userData.createdAt).getFullYear() 
     : new Date().getFullYear();
 
+  if (loading) {
+    return <ProfileHeroSkeleton />;
+  }
+
   return (
-    <div className="relative w-full h-[350px] rounded-3xl overflow-hidden mb-8 group">
+    <div className="relative w-full h-[280px] md:h-[350px] rounded-3xl overflow-hidden mb-8 group">
       {/* Background Cover */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-black/80">
         <img
@@ -75,12 +85,12 @@ const ProfileHero = ({ onEditProfileClick }) => {
       </div>
 
       {/* Content Overlay */}
-      <div className="absolute inset-0 p-8 flex flex-col justify-end">
+      <div className="absolute inset-0 p-4 md:p-8 flex flex-col justify-end">
         <div className="flex items-end gap-6">
           <div className="relative group/avatar cursor-pointer">
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="w-32 h-32 rounded-full border-4 border-black overflow-hidden shadow-2xl relative bg-zinc-800 flex items-center justify-center group-hover:scale-105 transition-transform"
+              className="w-20 h-20 md:w-32 md:h-32 rounded-full border-4 border-black overflow-hidden shadow-2xl relative bg-zinc-800 flex items-center justify-center group-hover:scale-105 transition-transform"
             >
               {userData?.photoURL || user?.photoURL ? (
                 <img
@@ -89,7 +99,7 @@ const ProfileHero = ({ onEditProfileClick }) => {
                   alt="Avatar"
                 />
               ) : (
-                <span className="text-4xl font-black text-white group-hover/avatar:opacity-50 transition-opacity">
+                <span className="text-2xl md:text-4xl font-black text-white group-hover/avatar:opacity-50 transition-opacity">
                     {(userData?.displayName || userData?.username || user?.displayName || 'U')[0]?.toUpperCase()}
                 </span>
               )}
@@ -113,38 +123,38 @@ const ProfileHero = ({ onEditProfileClick }) => {
           </div>
 
           <div className="flex-1 pb-1">
-            <span className="text-blue-400 font-bold text-xs uppercase tracking-widest mb-2 block pl-1">{greeting}</span>
-            <h1 className="text-4xl font-black text-white mb-2 truncate max-w-lg tracking-tight leading-none">
+            <span className="text-blue-400 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1 md:mb-2 block pl-1">{greeting}</span>
+            <h1 className="text-2xl md:text-4xl font-black text-white mb-2 truncate max-w-[200px] md:max-w-lg tracking-tight leading-none">
               {userData?.displayName || userData?.username || user?.displayName || 'User'}
             </h1>
             
-            <div className="flex flex-col sm:flex-row sm:items-center gap-6 mt-4">
-                <div className="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-6 mt-4">
+                <div className="hidden sm:flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
                     <i className="fa-regular fa-calendar"></i>
                     <span>Member since {memberSince}</span>
                 </div>
                 
                 {/* Quick Stats */}
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 md:gap-6">
                     <div className="flex items-center gap-2 text-white">
-                        <i className="fa-solid fa-eye text-blue-500"></i>
+                        <i className="fa-solid fa-eye text-blue-500 text-xs md:text-base"></i>
                         <div className="flex flex-col leading-none">
-                            <span className="font-bold text-sm">{stats.history}</span>
-                            <span className="text-[10px] text-gray-400 font-bold uppercase">Đã xem</span>
+                            <span className="font-bold text-xs md:text-sm">{stats.history}</span>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase hidden md:block">Đã xem</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 text-white">
-                        <i className="fa-solid fa-heart text-red-500"></i>
+                        <i className="fa-solid fa-heart text-red-500 text-xs md:text-base"></i>
                          <div className="flex flex-col leading-none">
-                            <span className="font-bold text-sm">{stats.favorites}</span>
-                            <span className="text-[10px] text-gray-400 font-bold uppercase">Yêu thích</span>
+                            <span className="font-bold text-xs md:text-sm">{stats.favorites}</span>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase hidden md:block">Yêu thích</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 text-white">
-                        <i className="fa-solid fa-comment text-yellow-500"></i>
+                        <i className="fa-solid fa-comment text-yellow-500 text-xs md:text-base"></i>
                          <div className="flex flex-col leading-none">
-                            <span className="font-bold text-sm">{stats.comments}</span>
-                            <span className="text-[10px] text-gray-400 font-bold uppercase">Bình luận</span>
+                            <span className="font-bold text-xs md:text-sm">{stats.comments}</span>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase hidden md:block">Bình luận</span>
                         </div>
                     </div>
                 </div>

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MoviesCard from '../components/home/MoviesCard';
+import { HeroSkeleton, MovieCardSkeleton } from '../components/skeleton/Skeletons';
 import { fetchPopularSeries, fetchSeriesByGenre } from '../lib/api/movies';
 import { SERIES_GENRES } from '../lib/api/genres';
 import { getImageUrl } from '../lib/utils/image';
+import { MIN_LOADING_TIME } from '../config/config';
 
 const GENRE_LIST = [
   { id: 'all', name: 'Tất cả' },
@@ -23,13 +25,14 @@ const SeriesPage = () => {
   const [featuredSeries, setFeaturedSeries] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [minLoading, setMinLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const loadSeries = async (currentPage, genreId, isLoadMore = false) => {
     try {
       if (isLoadMore) setIsLoadingMore(true);
-      else setIsLoading(true);
+      else setDataLoading(true);
 
       // Fetch 3 pages at once to get 60 items (guarantees full rows for 2, 3, 4, 5, 6 columns)
       const pagesToFetch = [
@@ -60,7 +63,7 @@ const SeriesPage = () => {
     } catch (error) {
       console.error('Failed to fetch series:', error);
     } finally {
-      setIsLoading(false);
+      setDataLoading(false);
       setIsLoadingMore(false);
     }
   };
@@ -69,6 +72,13 @@ const SeriesPage = () => {
     setPage(1);
     loadSeries(1, activeGenre, false);
   }, [activeGenre]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMinLoading(false), MIN_LOADING_TIME);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const isLoading = dataLoading || minLoading;
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
@@ -84,6 +94,28 @@ const SeriesPage = () => {
 
   const activeGenreName =
     GENRE_LIST.find(g => g.id === activeGenre)?.name || 'Tất cả';
+
+  if (isLoading && series.length === 0) {
+    return (
+      <main className="min-h-screen pb-20 bg-[#111112] text-white">
+        <HeroSkeleton />
+        <section className="px-8 mt-12 container mx-auto">
+           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+                <div className="space-y-4">
+                     <div className="h-10 w-64 bg-zinc-800 rounded-lg animate-pulse"></div>
+                     <div className="h-4 w-96 bg-zinc-800 rounded animate-pulse"></div>
+                </div>
+                <div className="h-12 w-48 bg-zinc-800 rounded-xl animate-pulse"></div>
+           </div>
+           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+              {[...Array(12)].map((_, i) => (
+                <MovieCardSkeleton key={i} layout="POSTER" />
+              ))}
+           </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen pb-20 bg-[#111112] text-white">
@@ -151,31 +183,50 @@ const SeriesPage = () => {
       </section>
 
       {/* Filter & Listing */}
-      <section className="px-8 mt-12 container mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+      <section className="px-4 md:px-8 mt-12 container mx-auto">
+        <div className="flex flex-col gap-6 mb-12">
+          {/* Title Section */}
           <div>
-            <h2 className="text-3xl font-black uppercase italic tracking-tighter mb-2">
+            <h2 className="text-2xl md:text-3xl font-black uppercase italic tracking-tighter mb-2">
               KHO PHIM <span className="text-blue-500">BỘ MỚI NHẤT</span>
             </h2>
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 text-xs md:text-sm">
               Cập nhật liên tục các tập phim mới nhất của những series đình đám.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-400">Thể loại:</span>
-            <span className="text-base font-bold text-blue-500">
-              {activeGenreName}
-            </span>
+          {/* Filter Section */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 md:p-6 bg-white/[0.02] border border-white/5 rounded-2xl backdrop-blur-sm">
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-xs md:text-sm text-gray-400 font-medium">Thể loại:</span>
+              <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                <i className="fa-solid fa-tv text-blue-500 text-sm"></i>
+                <span className="text-sm md:text-base font-bold text-blue-500">{activeGenreName}</span>
+              </div>
+              {activeGenre !== 'all' && (
+                <button
+                  onClick={() => {
+                    setActiveGenre('all');
+                    window.scrollTo({ top: 400, behavior: "smooth" });
+                  }}
+                  className="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1"
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                  Xóa bộ lọc
+                </button>
+              )}
+            </div>
+            
             <button
               onClick={() => {
                 setTempGenre(activeGenre);
                 setIsModalOpen(true);
               }}
-              className="bg-white text-black px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-blue-500 hover:text-white transition-all"
+              className="bg-white text-black px-4 md:px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-blue-500 hover:text-white transition-all active:scale-95 shadow-lg"
             >
               <i className="fa-solid fa-sliders"></i>
-              Chọn thể loại
+              <span className="hidden sm:inline">Chọn thể loại</span>
+              <span className="sm:hidden">Bộ lọc</span>
             </button>
           </div>
         </div>
@@ -196,14 +247,23 @@ const SeriesPage = () => {
           </div>
         )}
 
-        {page < totalPages && (
+
+        {/* Load More Skeletons */}
+        {isLoadingMore && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 mt-6">
+            {[...Array(12)].map((_, i) => (
+              <MovieCardSkeleton key={`loading-${i}`} layout="POSTER" />
+            ))}
+          </div>
+        )}
+
+        {page < totalPages && !isLoadingMore && (
           <div className="mt-16 flex justify-center">
             <button
               onClick={handleLoadMore}
-              disabled={isLoadingMore}
-              className="min-w-[200px] bg-zinc-900 hover:bg-zinc-800 text-white px-12 py-4 rounded-xl font-bold border border-white/5 transition-all"
+              className="min-w-[200px] bg-zinc-900 hover:bg-zinc-800 text-white px-12 py-4 rounded-xl font-bold border border-white/5 transition-all active:scale-95"
             >
-              {isLoadingMore ? 'Đang tải...' : 'Xem thêm'}
+              Xem thêm
             </button>
           </div>
         )}
@@ -211,38 +271,51 @@ const SeriesPage = () => {
 
       {/* MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/95">
-          <div className="w-full max-w-4xl bg-[#0f0f0f] rounded-3xl p-10 border border-white/10 shadow-2xl">
-            <h3 className="text-4xl font-black mb-8 uppercase italic">
-              Chọn <span className="text-blue-500">Thể loại</span>
-            </h3>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-black/95 backdrop-blur-sm">
+          <div className="w-full max-w-5xl bg-[#0f0f0f] rounded-3xl p-6 md:p-10 border border-white/10 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl md:text-4xl font-black uppercase italic">
+                Chọn <span className="text-blue-500">Thể loại</span>
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+              >
+                <i className="fa-solid fa-xmark text-white"></i>
+              </button>
+            </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
               {GENRE_LIST.map(genre => (
                 <button
                   key={genre.id}
                   onClick={() => setTempGenre(genre.id)}
-                  className={`p-6 rounded-2xl font-bold transition-all ${
+                  className={`group relative p-4 md:p-6 rounded-2xl font-bold transition-all text-sm md:text-base ${
                     tempGenre === genre.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-black border border-white/10 text-gray-400 hover:bg-white/5'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 scale-105'
+                      : 'bg-black border border-white/10 text-gray-400 hover:bg-white/5 hover:border-white/20 hover:text-white'
                   }`}
                 >
-                  {genre.name}
+                  {tempGenre === genre.id && (
+                    <div className="absolute top-2 right-2">
+                      <i className="fa-solid fa-circle-check text-white text-sm"></i>
+                    </div>
+                  )}
+                  <span className="block">{genre.name}</span>
                 </button>
               ))}
             </div>
 
-            <div className="flex justify-end gap-4">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-white/5">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-8 py-4 text-gray-400 hover:text-white font-bold"
+                className="px-6 md:px-8 py-3 md:py-4 text-gray-400 hover:text-white transition-colors font-bold rounded-xl hover:bg-white/5"
               >
                 Hủy
               </button>
               <button
                 onClick={handleApplyFilter}
-                className="px-10 py-4 bg-white text-black font-black rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
+                className="px-8 md:px-10 py-3 md:py-4 bg-white text-black font-black rounded-2xl hover:bg-blue-500 hover:text-white transition-all shadow-lg active:scale-95"
               >
                 Áp dụng
               </button>

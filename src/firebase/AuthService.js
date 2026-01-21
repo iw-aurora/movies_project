@@ -143,3 +143,13 @@ export const getUserRole = async (uid) => {
     return null;
   }
 };
+
+/**
+ * Xóa user khỏi Firebase Authentication
+ * @param {Object} user - Firebase Auth user object
+ * @returns {Promise<void>}
+ */
+export const deleteAuthUser = async (user) => {
+  const { deleteUser } = await import("firebase/auth");
+  await deleteUser(user);
+};

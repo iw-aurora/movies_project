@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MoviesCard from '../components/home/MoviesCard';
+import { MovieCardSkeleton } from '../components/skeleton/Skeletons';
+
 import { searchMovies, discoverMovies } from '../lib/api/movies';
 import { GENRES } from '../lib/api/genres';
+import { MIN_LOADING_TIME } from '../config/config';
 
 const GENRE_LIST = [
   { id: 'all', name: 'Tất cả' },
@@ -32,7 +35,8 @@ const StorePage = () => {
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || "");
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
   const [sortBy, setSortBy] = useState("newest");
-  const [isLoading, setIsLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [minLoading, setMinLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [movies, setMovies] = useState([]); // Stores ONLY current page movies
   const [totalPages, setTotalPages] = useState(1);
@@ -46,6 +50,13 @@ const StorePage = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  useEffect(() => {
+      const timer = setTimeout(() => setMinLoading(false), MIN_LOADING_TIME);
+      return () => clearTimeout(timer);
+  }, []);
+
+  const isLoading = dataLoading || minLoading;
+
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
@@ -53,8 +64,9 @@ const StorePage = () => {
 
   // Main Data Fetching Effect
   useEffect(() => {
+
     const loadMovies = async () => {
-      setIsLoading(true);
+      setDataLoading(true);
       
       try {
         // We fetch 3 pages from TMDB (20 * 3 = 60 items) to ensure the grid is full
@@ -111,7 +123,7 @@ const StorePage = () => {
         console.error("Failed to fetch movies:", error);
         setMovies([]);
       } finally {
-        setIsLoading(false);
+        setDataLoading(false);
       }
     };
 
@@ -165,6 +177,41 @@ const StorePage = () => {
 
   return (
     <div className="min-h-screen pt-20 bg-[#111112] text-white">
+      {isLoading ? (
+        <>
+            {/* HERO SKELETON */}
+            <div className="relative h-[45vh] bg-[#111112] animate-shimmer overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#111112] via-transparent to-black/60 z-10"></div>
+                <div className="relative z-20 h-full flex flex-col items-center justify-center space-y-4 px-6">
+                    <div className="h-16 w-3/4 md:w-1/2 bg-zinc-800 rounded-lg animate-pulse"></div>
+                    <div className="flex items-center justify-center gap-4 w-full">
+                        <span className="h-px w-12 bg-zinc-800"></span>
+                        <div className="h-4 w-48 bg-zinc-800 rounded animate-pulse"></div>
+                        <span className="h-px w-12 bg-zinc-800"></span>
+                    </div>
+                </div>
+            </div>
+
+             <div className="container mx-auto px-6 -mt-10 relative z-30">
+                 {/* TOOLBAR SKELETON */}
+                 <div className="bg-[#0f0f0f]/80 backdrop-blur-2xl border border-white/5 rounded-3xl p-4 md:p-6 shadow-2xl flex flex-col md:flex-row items-center gap-6 mb-12">
+                      <div className="w-full h-14 bg-zinc-800 rounded-2xl animate-pulse"></div>
+                      <div className="flex gap-4 w-full md:w-auto">
+                           <div className="w-48 h-12 bg-zinc-800 rounded-xl animate-pulse"></div>
+                           <div className="w-32 h-12 bg-zinc-800 rounded-xl animate-pulse"></div>
+                      </div>
+                 </div>
+                 
+                 {/* GRID SKELETON */}
+                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                    {[...Array(12)].map((_, index) => (
+                      <MovieCardSkeleton key={index} layout="POSTER" />
+                    ))}
+                  </div>
+             </div>
+        </>
+      ) : (
+        <>
       {/* HERO */}
       <div className="relative h-[45vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-[#111112] via-transparent to-black/60 z-10"></div>
@@ -254,12 +301,7 @@ const StorePage = () => {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="py-32 flex flex-col items-center justify-center gap-4">
-            <i className="fa-solid fa-circle-notch fa-spin text-4xl text-blue-600"></i>
-            <p className="text-gray-400 text-sm">Đang tải phim...</p>
-          </div>
-        ) : movies.length > 0 ? (
+        {movies.length > 0 ? (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
               {movies.map((movie) => (
@@ -319,6 +361,8 @@ const StorePage = () => {
           </div>
         )}
       </div>
+    </>
+  )}
 
       {/* MODAL */}
       {isModalOpen && (

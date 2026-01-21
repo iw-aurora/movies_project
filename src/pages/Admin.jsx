@@ -244,44 +244,44 @@ const Admin = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#09090b]">
 
-      <main className="flex-grow container mx-auto w-full px-8 pt-24 pb-24">
+      <main className="flex-grow container mx-auto w-full px-4 md:px-8 pt-24 pb-24">
         
         {/* Header & Tabs */}
         <header className="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
             <div className="flex flex-col gap-6">
-                <h1 className="text-5xl font-black text-white whitespace-nowrap">
+                <h1 className="text-3xl md:text-5xl font-black text-white whitespace-nowrap">
                     ADMIN DASHBOARD
                 </h1>
 
                 {/* TAB NAVIGATION */}
-                <div className="flex p-1 bg-white/5 rounded-2xl border border-white/5 w-fit">
+                <div className="flex p-1 bg-white/5 rounded-2xl border border-white/5 w-full md:w-fit overflow-x-auto">
                     <button
                         onClick={() => setActiveTab('users')}
-                        className={`px-8 py-3 rounded-xl text-sm font-black uppercase tracking-widest flex items-center gap-3 transition-all ${
+                        className={`px-4 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-widest flex items-center gap-2 md:gap-3 transition-all whitespace-nowrap ${
                             activeTab === 'users' 
                             ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
                             : 'text-gray-500 hover:text-white hover:bg-white/5'
                         }`}
                     >
-                        <Users size={18} />
+                        <Users size={16} className="md:w-[18px] md:h-[18px]" />
                         Quản lý User
                     </button>
                     <button
                         onClick={() => setActiveTab('comments')}
-                        className={`px-8 py-3 rounded-xl text-sm font-black uppercase tracking-widest flex items-center gap-3 transition-all ${
+                        className={`px-4 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-widest flex items-center gap-2 md:gap-3 transition-all whitespace-nowrap ${
                             activeTab === 'comments' 
                             ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
                             : 'text-gray-500 hover:text-white hover:bg-white/5'
                         }`}
                     >
-                        <MessageSquare size={18} />
+                        <MessageSquare size={16} className="md:w-[18px] md:h-[18px]" />
                         Quản lý Bình luận
                     </button>
                 </div>
             </div>
  
             {/* RIGHT STATS */}
-            <div className="grid grid-cols-3 gap-4 w-full xl:w-auto animate-in fade-in zoom-in duration-500">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full xl:w-auto animate-in fade-in zoom-in duration-500">
                 {activeTab === 'users' ? (
                     <>
                         <SummaryCard
@@ -335,9 +335,9 @@ const Admin = () => {
                 <>
                     <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 animate-in fade-in slide-in-from-bottom-2">
                         <div>
-                        <h1 className="text-5xl font-black text-white uppercase tracking-tighter">
-                            Quản lý <span className="text-indigo-500">Người dùng</span>
-                        </h1>
+                    <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
+                        Quản lý <span className="text-indigo-500">Người dùng</span>
+                    </h1>
                         <p className="text-zinc-500 mt-2 font-medium">
                             Quản lý tài khoản, phân quyền và trạng thái người dùng.
                         </p>

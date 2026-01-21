@@ -12,15 +12,15 @@ const User = () => {
 
   return (
     <>
-        <main className="pt-24 pb-12 px-8 container mx-auto">
+        <main className="pt-24 pb-12 px-4 md:px-8 container mx-auto">
         <ProfileHero onEditProfileClick={() => setActiveTab('Settings')} />
 
-        <nav className="flex items-center gap-8 border-b border-white/10 mb-10 overflow-x-auto no-scrollbar">
+        <nav className="flex items-center gap-4 md:gap-8 border-b border-white/10 mb-6 md:mb-10 overflow-x-auto no-scrollbar scroll-smooth">
             {tabs.map((tab) => (
             <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-4 text-sm font-bold transition-all relative whitespace-nowrap ${
+                className={`pb-3 md:pb-4 text-xs md:text-sm font-bold transition-all relative whitespace-nowrap shrink-0 ${
                 activeTab === tab
                     ? 'text-white'
                     : 'text-gray-500 hover:text-white'
@@ -66,13 +66,13 @@ const User = () => {
             )}
 
             {activeTab === 'Reviews' && (
-                <div className="max-w-3xl">
+                <div className="w-full">
                     <UserComment isFullView={true} />
                 </div>
             )}
 
             {activeTab === 'Settings' && (
-                <div className="max-w-2xl">
+                <div className="w-full">
                     <ChangePass compact={false} />
                 </div>
             )}

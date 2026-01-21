@@ -126,3 +126,46 @@ export const getUserStats = async (userId) => {
         return { favorites: 0, history: 0, comments: 0 };
     }
 };
+
+/**
+ * Xóa tài khoản người dùng và tất cả dữ liệu liên quan
+ * @param {string} userId - ID của user cần xóa
+ * @returns {Promise<void>}
+ */
+export const deleteUserAccount = async (userId) => {
+    const { deleteDoc, getDocs } = await import("firebase/firestore");
+
+    try {
+        // 1. Xóa favorites (my_list subcollection)
+        const favoritesRef = collection(db, 'users', userId, 'my_list');
+        const favoritesSnap = await getDocs(favoritesRef);
+        const favoriteDeletes = favoritesSnap.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(favoriteDeletes);
+
+        // 2. Xóa watch history
+        const historyQuery = query(
+            collection(db, 'watch_history'),
+            where('userId', '==', userId)
+        );
+        const historySnap = await getDocs(historyQuery);
+        const historyDeletes = historySnap.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(historyDeletes);
+
+        // 3. Xóa comments
+        const commentsQuery = query(
+            collection(db, 'movie_comments'),
+            where('userId', '==', userId)
+        );
+        const commentsSnap = await getDocs(commentsQuery);
+        const commentDeletes = commentsSnap.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(commentDeletes);
+
+        // 4. Xóa user document
+        await deleteDoc(doc(db, 'users', userId));
+
+        console.log(`Successfully deleted user ${userId} and all related data`);
+    } catch (error) {
+        console.error("Error deleting user account:", error);
+        throw error;
+    }
+};

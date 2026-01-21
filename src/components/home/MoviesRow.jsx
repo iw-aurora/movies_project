@@ -10,13 +10,18 @@ const MoviesRow = ({ title, movies = [], layout = "POSTER", scrollable = true })
 
     const { scrollLeft, clientWidth, scrollWidth } = rowRef.current;
 
+    // Calculate card width based on layout
+    const cardWidth = layout === "POSTER" ? 200 : 340;
+    const gap = 24; // gap-6 = 24px
+    const scrollDistance = cardWidth + gap;
+
     if (direction === "right" && scrollLeft + clientWidth >= scrollWidth - 1) {
       rowRef.current.scrollTo({ left: 0, behavior: "smooth" });
       return;
     }
 
     rowRef.current.scrollTo({
-      left: direction === "left" ? scrollLeft - clientWidth : scrollLeft + clientWidth,
+      left: direction === "left" ? scrollLeft - scrollDistance : scrollLeft + scrollDistance,
       behavior: "smooth",
     });
   };
@@ -64,9 +69,9 @@ const MoviesRow = ({ title, movies = [], layout = "POSTER", scrollable = true })
         </div>
       ) : (
         <div className="relative">
-          <div ref={rowRef} className="flex gap-6 pb-10 overflow-x-auto no-scrollbar scroll-smooth">
+          <div ref={rowRef} className="flex gap-6 pb-10 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
             {movies.map((movie) => (
-              <div key={movie.id} className={layout === "POSTER" ? "min-w-[200px]" : "min-w-[340px]"}>
+              <div key={movie.id} className={`snap-center ${layout === "POSTER" ? "min-w-[200px]" : "min-w-[340px]"}`}>
                 <MovieCard movie={movie} layout={layout} />
               </div>
             ))}

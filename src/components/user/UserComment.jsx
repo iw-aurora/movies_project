@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContext';
 import { subscribeToUserComments } from '../../firebase/CommentService';
 import { getImageUrl } from '../../lib/utils/image';
+import { UserCommentSkeleton } from '../skeleton/Skeletons';
 
 const UserComment = ({ isFullView = false, onViewAllClick }) => {
   const { user } = useAuth();
@@ -45,15 +46,7 @@ const UserComment = ({ isFullView = false, onViewAllClick }) => {
   };
 
   if (loading) {
-    return (
-      <div>
-         <div className={`${isFullView ? '' : 'bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/5 rounded-3xl p-6'}`}>
-            <div className="flex items-center justify-center py-12">
-              <i className="fa-solid fa-circle-notch fa-spin text-2xl text-blue-600"></i>
-            </div>
-         </div>
-      </div>
-    );
+    return <UserCommentSkeleton isFullView={isFullView} />;
   }
 
   if (reviews.length === 0) {
@@ -77,52 +70,95 @@ const UserComment = ({ isFullView = false, onViewAllClick }) => {
 
   return (
     <div>
-      {!isFullView && (
+      {!isFullView ? (
         <div className="mb-6">
            <h2 className="text-xl font-bold text-white tracking-tight">Recent Reviews</h2>
         </div>
+      ) : (
+        <div className="flex items-center justify-between mb-6 md:mb-8">
+            <div>
+                <h2 className="text-2xl md:text-3xl font-black text-white mb-1 md:mb-2 uppercase italic tracking-tighter">Đánh giá <span className="text-blue-500">Của bạn</span></h2>
+                <p className="text-xs md:text-sm text-gray-500 font-medium">Lịch sử nhận xét và đánh giá phim</p>
+            </div>
+             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-[#111] border border-white/5 flex items-center justify-center text-blue-500 shadow-lg">
+                <i className="fa-solid fa-comments text-base md:text-xl"></i>
+            </div>
+        </div>
       )}
 
-      <div className={`${isFullView ? '' : 'bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/5 rounded-3xl p-6 space-y-6 group hover:border-white/10 transition-colors'}`}>
-        <div className={`${isFullView ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-6'}`}>
+      <div className={`${isFullView ? '' : 'bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/5 rounded-3xl p-4 md:p-6 space-y-6 group hover:border-white/10 transition-colors'}`}>
+        <div className={`${isFullView ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6' : 'space-y-6'}`}>
           {reviews.map((review) => (
             <div 
               key={review.id} 
               onClick={() => navigate(`/watch/${review.movieId}#comment-${review.id}`)}
-              className={`flex gap-4 group cursor-pointer ${isFullView ? 'bg-zinc-900/50 p-6 rounded-3xl border border-white/5 hover:border-blue-500/30 hover:bg-blue-500/5 transition-all' : ''}`}
+              className={`flex gap-4 group cursor-pointer ${isFullView ? 'flex-col bg-[#18181b] p-4 md:p-6 rounded-2xl md:rounded-3xl border border-white/5 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-300' : ''}`}
             >
-              <div className={`relative shrink-0 ${isFullView ? 'w-24 h-36' : 'w-12 h-16'}`}>
+              <div className={`relative shrink-0 ${isFullView ? 'w-full aspect-video rounded-2xl overflow-hidden' : 'w-12 h-16'}`}>
                   <img
-                  src={review.moviePoster ? getImageUrl(review.moviePoster) : 'https://via.placeholder.com/300x450?text=No+Image'}
+                  src={review.moviePoster ? getImageUrl(review.moviePoster, isFullView ? 'w500' : 'w200') : 'https://via.placeholder.com/300x450?text=No+Image'}
                   alt={review.movieTitle}
-                  className="w-full h-full rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all border border-white/10 shadow-lg"
+                  className={`w-full h-full object-cover transition-all duration-500 ${isFullView ? 'group-hover:scale-110' : 'grayscale group-hover:grayscale-0 rounded-xl border border-white/10 shadow-lg'}`}
                   />
+                  {isFullView && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
+                          <div className="w-full">
+                               <h3 className="font-black text-white text-lg line-clamp-1 group-hover:text-blue-400 transition-colors shadow-black drop-shadow-md">
+                                {review.movieTitle || 'Untitled Movie'}
+                                </h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <div className="flex gap-0.5">
+                                        {[...Array(5)].map((_, i) => (
+                                            <i
+                                            key={i}
+                                            className={`fa-solid fa-star text-[10px] ${
+                                                i < (review.rating || 0) ? 'text-yellow-500' : 'text-gray-600'
+                                            }`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="text-[10px] text-gray-400 font-bold px-2 py-0.5 bg-black/50 rounded-full backdrop-blur-md border border-white/10">
+                                        {formatDate(review.createdAt)}
+                                    </span>
+                                </div>
+                          </div>
+                      </div>
+                  )}
               </div>
 
-              <div className="flex-1 flex flex-col">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className={`font-bold text-white group-hover:text-blue-500 transition-colors ${isFullView ? 'text-lg' : 'text-s'}`}>
-                    {review.movieTitle || 'Untitled Movie'}
-                  </h3>
-                  <span className={`text-gray-500 font-bold whitespace-nowrap ${isFullView ? 'text-xs' : 'text-[10px]'}`}>
-                    {formatDate(review.createdAt)}
-                  </span>
-                </div>
+              <div className={`flex-1 flex flex-col ${isFullView ? 'pt-2' : ''}`}>
+                {!isFullView && (
+                    <div className="flex justify-between items-start mb-1">
+                    <h3 className="font-bold text-white group-hover:text-blue-500 transition-colors text-sm">
+                        {review.movieTitle || 'Untitled Movie'}
+                    </h3>
+                    <span className="text-gray-500 font-bold whitespace-nowrap text-[10px]">
+                        {formatDate(review.createdAt)}
+                    </span>
+                    </div>
+                )}
 
-                <div className="flex gap-0.5 mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <i
-                      key={i}
-                      className={`fa-solid fa-star ${isFullView ? 'text-xs' : 'text-[10px]'} ${
-                        i < (review.rating || 0) ? 'text-yellow-500' : 'text-gray-700'
-                      }`}
-                    />
-                  ))}
-                </div>
+                {!isFullView && (
+                    <div className="flex gap-0.5 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                        <i
+                        key={i}
+                        className={`fa-solid fa-star text-[10px] ${
+                            i < (review.rating || 0) ? 'text-yellow-500' : 'text-gray-700'
+                        }`}
+                        />
+                    ))}
+                    </div>
+                )}
 
-                <p className={`text-gray-400 leading-relaxed font-medium line-clamp-3 ${isFullView ? 'text-sm' : 'text-xs'}`}>
-                  "{review.text || review.content || review.comment || 'No comment'}"
-                </p>
+                <div className={`relative ${isFullView ? 'bg-black/40 p-4 rounded-xl border border-white/5' : ''}`}>
+                    {isFullView && (
+                        <i className="fa-solid fa-quote-left text-blue-500/20 text-3xl absolute top-2 left-2"></i>
+                    )}
+                    <p className={`text-gray-400 leading-relaxed font-medium line-clamp-3 ${isFullView ? 'text-sm relative z-10 pl-2' : 'text-xs'}`}>
+                    "{review.text || review.content || review.comment || 'No comment'}"
+                    </p>
+                </div>
                 
               </div>
             </div>

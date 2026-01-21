@@ -9,15 +9,25 @@ import deal from "../assets/images/deal.png";
 import { Link } from 'react-router-dom';
 import MoviesCard from '../components/home/MoviesCard';
 import MoviesRow from '../components/home/MoviesRow';
+import { MoviesRowSkeleton } from '../components/skeleton/Skeletons';
+import { MIN_LOADING_TIME } from '../config/config';
 
 const Contact = () => {
   const { user } = useAuth();
-  const { sections, loading } = useHomeData();
+  const { sections, loading: dataLoading } = useHomeData();
   const [formData, setFormData] = useState({ 
     name: user?.displayName || '', 
     message: '' 
   });
   const [submitting, setSubmitting] = useState(false);
+  const [minLoading, setMinLoading] = useState(true);
+  
+  const loading = dataLoading || minLoading;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMinLoading(false), MIN_LOADING_TIME);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Sync user name when auth state changes
   useEffect(() => {
@@ -65,7 +75,25 @@ const Contact = () => {
   };
 
   if (loading) {
-     return <div className="min-h-screen bg-[#111112] pt-24 text-center text-white">Loading...</div>;
+     return (
+        <div className="pt-20 min-h-screen bg-[#111112] text-zinc-100 overflow-x-hidden">
+             <section className="px-20 py-12 container mx-auto text-center space-y-4">
+                  <div className="h-10 w-48 bg-zinc-800 rounded-lg animate-pulse mx-auto"></div>
+                  <div className="h-4 w-2/3 bg-zinc-800 rounded animate-pulse mx-auto"></div>
+             </section>
+
+             <div className="container mx-auto px-4">
+                  <div className="bg-white/[0.02] border border-white/5 p-5 rounded-2xl h-[400px] animate-pulse mb-6"></div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                       {[1,2,3].map(i => <div key={i} className="h-32 bg-zinc-800 rounded-xl animate-pulse"></div>)}
+                  </div>
+             </div>
+
+             <section className="container mx-auto pb-10 px-4">
+                 <MoviesRowSkeleton layout="BACKDROP" />
+             </section>
+        </div>
+     );
   }
 
   return (

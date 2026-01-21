@@ -4,6 +4,7 @@ import { useAuth } from '../../Context/AuthContext';
 import { getWatchHistory } from '../../firebase/HistoryService';
 import { getImageUrl } from '../../lib/utils/image';
 import { History } from 'lucide-react';
+import { ContinueWatchingSkeleton } from '../skeleton/Skeletons';
 
 const ContinueWatching = ({ onViewAllClick, compact = false }) => {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ const ContinueWatching = ({ onViewAllClick, compact = false }) => {
       return `${minutes}m còn lại`;
   };
 
-  if (loading) return null;
+  if (loading) return <ContinueWatchingSkeleton />;
   
   if (movies.length === 0) {
       return (

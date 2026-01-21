@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
   const { user, role } = useAuth();
@@ -28,19 +29,32 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-8 py-4 flex items-center justify-between ${
-        isScrolled ? "bg-black/80 backdrop-blur-lg border-b border-white/10" : "bg-gradient-to-b from-black/90 via-black/40 to-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-4 md:px-8 py-4 flex items-center justify-between ${
+        isMobileMenuOpen 
+          ? "bg-black border-b border-white/5" 
+          : isScrolled 
+            ? "bg-black/80 backdrop-blur-lg border-b border-white/10" 
+            : "bg-gradient-to-b from-black/90 via-black/40 to-transparent"
       }`}
     >
-      <div className="flex items-center gap-12">
-        <Link to="/" className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-11 h-11 bg-white rounded-xl rotate-3 group-hover:rotate-12 transition-transform flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-            <i className="fa-solid fa-moon text-black text-2xl"></i>
-          </div>
-          <span className="text-2xl font-black tracking-tighter text-white uppercase italic">
-            MOON<span className="text-blue-500">PLAY</span>
-          </span>
-        </Link>
+      <div className="flex items-center gap-4 lg:gap-12">
+        <div className="flex items-center gap-4">
+          <button 
+             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+             className="lg:hidden text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-xl active:scale-95 transition-transform"
+          >
+             <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+          </button>
+          
+          <Link to="/" className="flex items-center gap-3 cursor-pointer group">
+            <div className="w-9 h-9 md:w-11 md:h-11 bg-white rounded-xl rotate-3 group-hover:rotate-12 transition-transform flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+              <i className="fa-solid fa-moon text-black text-xl md:text-2xl"></i>
+            </div>
+            <span className="text-lg md:text-2xl font-black tracking-tighter text-white uppercase italic">
+              MOON<span className="text-blue-500">PLAY</span>
+            </span>
+          </Link>
+        </div>
 
         <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
@@ -142,8 +156,12 @@ const Header = () => {
                  </Link>
               )}
               
-              <button onClick={handleLogout} className="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-red-500 hover:text-white transition-all shadow-lg active:scale-95">
-                Đăng xuất
+              <button 
+                onClick={handleLogout} 
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-red-500/20 text-white hover:text-red-500 flex items-center justify-center transition-all active:scale-95 group"
+                title="Đăng xuất"
+              >
+                <i className="fa-solid fa-right-from-bracket text-lg group-hover:translate-x-0.5 transition-transform"></i>
               </button>
             </div>
           ) : (
@@ -156,6 +174,34 @@ const Header = () => {
           );
         })()}
       </div>
+
+      {/* MOBILE MENU OVERLAY */}
+      <div className={`fixed inset-0 bg-black z-[45] transition-all duration-500 lg:hidden flex flex-col pt-24 px-8 ${
+        isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+      }`}>
+         <div className="flex flex-col gap-6">
+            {navLinks.map((link, index) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                onClick={() => {
+                   setIsMobileMenuOpen(false);
+                   window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={({ isActive }) =>
+                  `text-2xl font-bold tracking-tight transition-all duration-300 flex items-center justify-between group border-b border-white/5 pb-4 ${
+                    isActive ? "text-white" : "text-gray-500 hover:text-white"
+                  }`
+                }
+                style={{ transitionDelay: `${index * 50}ms` }}
+              >
+                 <span>{link.label}</span>
+                 <i className="fa-solid fa-arrow-right text-base opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all"></i>
+              </NavLink>
+            ))}
+         </div>
+      </div>
+
     </header>
   );
 };
