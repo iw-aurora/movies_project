@@ -1,5 +1,5 @@
 import bg from "../../assets/images/bg.png";
-const Explore = () => {
+const Explore = ({ className = "py-1 md:py-4 px-0" }) => {
   const categories = [
     {
       name: "Phim Chiếu rạp",
@@ -19,8 +19,8 @@ const Explore = () => {
   ];
 
   return (
-    <div className="py-4">
-      <div className="flex items-center gap-3 mb-10">
+    <div className={className}>
+      <div className="flex items-center gap-3 mb-6 md:mb-10">
         <span className="w-1.5 h-8 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.6)]"></span>
         <h2 className="text-2xl font-black tracking-tight text-white uppercase italic">Khám phá thể loại</h2>
       </div>
@@ -29,7 +29,7 @@ const Explore = () => {
         {categories.map((cat) => (
           <div
             key={cat.name}
-            className="relative h-32 md:h-56 overflow-hidden cursor-pointer group rounded-2xl md:rounded-3xl border border-white/5 transition-all duration-500 hover:border-white/20 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)]"
+            className="relative h-20 md:h-56 overflow-hidden cursor-pointer group rounded-2xl md:rounded-3xl border border-white/5 transition-all duration-500 hover:border-white/20 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)]"
           >
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"

@@ -27,21 +27,21 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-4 md:px-8 py-4 flex items-center justify-between ${
+      className={`fixed top-0 left-0 right-0 z-[70] transition-all px-4 md:px-8 py-3.5 flex items-center justify-between ${
         isMobileMenuOpen 
-          ? "bg-black border-b border-white/5" 
+          ? "bg-black border-b border-white/5 duration-0" 
           : isScrolled 
-            ? "bg-black/80 backdrop-blur-lg border-b border-white/10" 
-            : "bg-gradient-to-b from-black/90 via-black/40 to-transparent"
+            ? "bg-black/80 backdrop-blur-lg border-b border-white/10 duration-500" 
+            : "bg-gradient-to-b from-black/90 via-black/40 to-transparent duration-500"
       }`}
     >
       <div className="flex items-center gap-4 lg:gap-12 relative z-50">
         <div className="flex items-center gap-4">
           <button 
              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-             className="lg:hidden text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-xl active:scale-95 transition-transform"
+             className="lg:hidden text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-xl active:scale-95 transition-all duration-300"
           >
-             <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+             <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark rotate-90' : 'fa-bars'} transition-transform duration-500`}></i>
           </button>
           
           <Link to="/" className="flex items-center gap-3 cursor-pointer group">
@@ -105,7 +105,7 @@ const Header = () => {
               {user.photoURL ? (
                 <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm font-semibold">{(user.displayName || 'U')[0]}</div>
+                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm font-semibold">{(user.displayName || user.email || 'U')[0].toUpperCase()}</div>
               )}
             </>
           );
@@ -133,7 +133,7 @@ const Header = () => {
           ) : (
             <Link
               to="/auth/login"
-              className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-blue-500 hover:text-white transition-all shadow-lg active:scale-95"
+              className="bg-white text-black px-2 py-1 md:px-6 md:py-2.5 rounded-full text-[9px] md:text-sm font-bold hover:bg-blue-500 hover:text-white transition-all shadow-lg active:scale-95 whitespace-nowrap"
             >
               Đăng nhập
             </Link>
@@ -143,35 +143,79 @@ const Header = () => {
 
       {/* MOBILE MENU OVERLAY */}
       <div 
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            setIsMobileMenuOpen(false);
-          }
-        }}
-        className={`fixed inset-0 bg-black/95 backdrop-blur-xl z-[45] transition-all duration-500 lg:hidden flex flex-col pt-24 px-8 ${
-        isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
-      }`}>
-         <div className="flex flex-col gap-6">
-            {navLinks.map((link, index) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                onClick={() => {
-                   setIsMobileMenuOpen(false);
-                   window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className={({ isActive }) =>
-                  `text-2xl font-bold tracking-tight transition-all duration-300 flex items-center justify-between group border-b border-white/5 pb-4 ${
-                    isActive ? "text-white" : "text-gray-500 hover:text-white"
-                  }`
+        className={`fixed inset-0 z-[60] lg:hidden ${
+          isMobileMenuOpen ? 'visible' : 'invisible pointer-events-none'
+        }`}
+      >
+        {/* Backdrop - Simple fade without blur for performance */}
+        <div 
+          onClick={() => setIsMobileMenuOpen(false)}
+          className={`absolute inset-0 bg-black/60 transition-opacity duration-600 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+
+        {/* Menu Content - Forced solid black background */}
+        <div 
+          style={{ backgroundColor: '#000000', opacity: 1 }}
+          className={`absolute top-0 left-0 bottom-0 w-[280px] border-r border-white/10 shadow-[20px_0_50px_rgba(0,0,0,0.5)] transition-transform duration-600 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col ${
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {/* Sidebar Header */}
+          <div className="py-3.5 px-6 flex items-center justify-between border-b border-white/5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-lg rotate-3 flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                <i className="fa-solid fa-moon text-black text-lg"></i>
+              </div>
+              <span className="text-xl font-black tracking-tighter text-white uppercase italic">
+                MOON<span className="text-blue-500">PLAY</span>
+              </span>
+            </div>
+            <button 
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white active:scale-95 transition-all"
+            >
+              <i className="fa-solid fa-xmark text-xl"></i>
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-1 pt-2 px-4 pb-4 overflow-y-auto">
+            {navLinks.map((link) => {
+              const getIcon = (label) => {
+                switch(label) {
+                  case 'Trang chủ': return 'fa-house';
+                  case 'Giới thiệu': return 'fa-circle-info';
+                  case 'Kho phim': return 'fa-clapperboard';
+                  case 'Phim điện ảnh': return 'fa-film';
+                  case 'Phim bộ': return 'fa-tv';
+                  case 'Liên hệ': return 'fa-envelope';
+                  default: return 'fa-link';
                 }
-                style={{ transitionDelay: `${index * 50}ms` }}
-              >
-                 <span>{link.label}</span>
-                 <i className="fa-solid fa-arrow-right text-base opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all"></i>
-              </NavLink>
-            ))}
-         </div>
+              };
+
+              return (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-4 py-3.5 px-4 rounded-xl transition-all ${
+                      isActive 
+                        ? "bg-blue-600/10 text-blue-500 font-bold" 
+                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                    }`
+                  }
+                >
+                   <i className={`fa-solid ${getIcon(link.label)} w-5 text-center text-sm`}></i>
+                   <span className="text-[15px] tracking-wide">{link.label}</span>
+                </NavLink>
+              );
+            })}
+          </div>
+
+
+        </div>
       </div>
 
     </header>

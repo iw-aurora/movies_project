@@ -26,7 +26,7 @@ const Home = () => {
     return (
       <div className="min-h-screen bg-[#111112]">
         <HeroSkeleton />
-        <div className="space-y-8 pb-20 pt-10 px-4">
+        <div className="space-y-3 md:space-y-8 pb-[10px] md:pb-20 pt-10 px-2 md:px-0">
           <section className="container mx-auto">
             <MoviesRowSkeleton layout="BACKDROP" />
           </section>
@@ -35,7 +35,7 @@ const Home = () => {
             <MoviesRowSkeleton layout="BACKDROP" />
             <MoviesRowSkeleton layout="POSTER" />
           </section>
-          <section className="bg-zinc-900/40 py-16">
+          <section className="bg-zinc-900/40 py-2 md:py-16">
             <div className="container mx-auto">
               <FeatureRowSkeleton />
             </div>
@@ -50,12 +50,12 @@ const Home = () => {
       <main>
         <Hero movie={heroMovie} />
 
-        <div className="space-y-8 pb-20 pt-10">
+        <div className="space-y-3 md:space-y-8 pb-[10px] md:pb-20 pt-10 px-2 md:px-0">
           <section className="container mx-auto">
             <MoviesRow title="🔥 Phim hot tuần này" movies={sections.hot} layout="BACKDROP" />
           </section>
 
-          <div className="w-full relative group overflow-hidden">
+          <div className="w-full relative group overflow-hidden -mx-2 md:mx-0">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 mix-blend-overlay"></div>
             <img
               src={sales}
@@ -65,7 +65,7 @@ const Home = () => {
           </div>
 
           <section className="container mx-auto">
-            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="BACKDROP" scrollable={false} />
+            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="POSTER" scrollable={false} />
             <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" />
             <MoviesRow title="Hành tinh xanh" movies={sections.nature} layout="BACKDROP" />
           </section>
@@ -76,7 +76,7 @@ const Home = () => {
             <MoviesRow title="Thế giới Anime" movies={sections.anime} layout="POSTER" />
           </section>
 
-          <section className="bg-zinc-900/40 py-16">
+          <section className="bg-zinc-900/40 py-2 md:py-16">
             <div className="container mx-auto">
               <FeatureRow title="TOP PHIM ĐẶC SẮC" movies={sections.topSpecial} />
             </div>

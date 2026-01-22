@@ -38,9 +38,9 @@ const Introduce = () => {
   return (
     <div className="min-h-screen bg-[#111112] text-zinc-100">
       <main>
-        <section className="container mx-auto px-6 pt-32 mb-16">
+        <section className="container mx-auto px-6 pt-32 mb-[10px]">
           <div className="flex items-center gap-3 mb-6">
-            <span className="w-1.5 h-8 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.6)]"></span>
+            <span className="w-2 h-10 md:h-14 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.6)]"></span>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase italic">Về MoonPlay</h1>
           </div>
 
@@ -51,9 +51,9 @@ const Introduce = () => {
           </p>
         </section>
 
-        <div className="space-y-20 pb-20">
-          <section className="container mx-auto">
-            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="BACKDROP" scrollable={false} />
+        <div className="space-y-[10px] pb-20">
+          <section className="container mx-auto px-6">
+            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="BACKDROP" scrollable={false} className="py-0" />
           </section>
 
           <section className="container mx-auto px-6">
@@ -66,8 +66,8 @@ const Introduce = () => {
             </div>
           </section>
 
-          <section className="container mx-auto">
-            <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" />
+          <section className="container mx-auto px-6">
+            <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" className="py-0" />
           </section>
 
           <section className="container mx-auto px-6">
@@ -80,7 +80,7 @@ const Introduce = () => {
             </div>
           </section>
 
-          <div className="w-full relative group overflow-hidden">
+          <div className="w-full relative group overflow-hidden py-[10px] md:py-10">
             <div className="absolute inset-0 bg-gradient-to-t from-[#111112] via-transparent to-transparent"></div>
             <img
               src={deal}
@@ -89,12 +89,12 @@ const Introduce = () => {
             />
           </div>
 
-          <section className="container mx-auto">
-            <Explore />
+          <section className="container mx-auto px-6">
+            <Explore className="py-0" />
           </section>
 
-          <section className="container mx-auto">
-            <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" />
+          <section className="container mx-auto px-6">
+            <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" className="py-0" />
           </section>
         </div>
       </main>

@@ -97,57 +97,59 @@ const Contact = () => {
   }
 
   return (
-    <div className="pt-20 min-h-screen bg-[#111112] text-zinc-100 overflow-x-hidden">
+    <div className="pt-20 min-h-screen bg-[#111112] text-zinc-100 overflow-x-hidden no-scrollbar">
       {/* Introduction Section */}
-      <section className="px-[5px] md:px-20 py-12 container mx-auto">
-        <div className="mb-6 animate-fade-in-up text-center">
-          <h1 className="text-3xl md:text-4xl font-black mb-4 uppercase italic tracking-tighter">
-            Moon<span className="text-blue-500">Play</span>
+      <section className="px-6 md:px-20 py-10 container mx-auto">
+        <div className="mb-0 animate-fade-in text-center space-y-2">
+          <h1 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter text-gradient">
+            MoonPlay
           </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed text-sm md:text-base font-medium">
-            Chúng tôi luôn mong muốn mang đến cho bạn những trải nghiệm tốt nhất trên trang web MoonPlay.
-            Đừng ngần ngại để lại những thông tin hay góp ý qua form dưới đây.
+          <p className="text-zinc-500 max-w-xl mx-auto leading-relaxed text-xs md:text-sm font-medium">
+            Chúng tôi luôn lắng nghe ý kiến của bạn để hoàn thiện MoonPlay mỗi ngày.
+            Hãy để lại góp ý bên dưới nhé.
           </p>
         </div>
 
         {/* Contact Form & Socials */}
         <div className="container mx-auto">
-           <div className="bg-white/[0.02] border border-white/5 p-5 rounded-2xl backdrop-blur-sm mb-6">
-              <h3 className="text-base md:text-lg font-bold mb-4 flex items-center gap-2 text-white">
-                <span className="w-1 h-5 bg-blue-500 rounded-full"></span>
-                Góp ý của bạn
-              </h3>
+           <div className="bg-zinc-900/40 border border-white/10 p-6 md:p-8 rounded-3xl backdrop-blur-xl mb-4 shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-1.5 h-6 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.4)]"></span>
+                <h3 className="text-lg md:text-xl font-black text-white uppercase italic tracking-tight">
+                  Gửi Phản Hồi
+                </h3>
+              </div>
 
-              <form className="space-y-3" onSubmit={handleSubmit}>
-                <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Họ và tên</label>
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                <div className="space-y-1.5">
+                    <label className="block text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Họ và tên</label>
                     <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="Nhập họ tên của bạn..."
-                    className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-gray-700 font-medium text-white"
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      placeholder="Tên của bạn..."
+                      className="w-full bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500/50 focus:bg-zinc-800/80 transition-all placeholder:text-zinc-600 font-medium text-white shadow-inner"
                     />
                 </div>
                 
-                <div>
-                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nội dung góp ý</label>
+                <div className="space-y-1.5">
+                     <label className="block text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Nội dung</label>
                     <textarea
-                    rows={4}
-                    value={formData.message}
-                    onChange={(e) => setFormData({...formData, message: e.target.value})}
-                    placeholder="Bạn có góp ý gì để chúng tôi phát triển hơn..."
-                    className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-gray-700 font-medium resize-none text-white"
+                      rows={4}
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      placeholder="Góp ý hoặc báo lỗi tại đây..."
+                      className="w-full bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500/50 focus:bg-zinc-800/80 transition-all placeholder:text-zinc-600 font-medium resize-none text-white shadow-inner"
                     />
                 </div>
                 <button 
                     disabled={submitting}
-                    className="w-full bg-blue-600 text-white px-5 py-3 rounded-lg text-base font-black uppercase tracking-wider hover:bg-blue-700 active:scale-[0.98] transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:from-blue-500 hover:to-blue-400 active:scale-[0.97] transition-all shadow-[0_10px_20px_-5px_rgba(37,99,235,0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
                 >
                   {submitting ? (
                       <><i className="fa-solid fa-circle-notch fa-spin"></i> Đang gửi...</>
                   ) : (
-                      <><i className="fa-solid fa-paper-plane"></i> Gửi Ngay</>
+                      <><i className="fa-solid fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i> Gửi ngay</>
                   )}
                 </button>
               </form>
@@ -155,44 +157,41 @@ const Contact = () => {
 
             {/* Quick Info Cards */}
             <div className="grid grid-cols-3 gap-2 md:gap-3 mb-6">
-              <div className="bg-white/[0.02] border border-white/5 p-2 md:p-4 rounded-xl text-center">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
-                  <i className="fa-solid fa-clock text-blue-500 text-sm md:text-lg"></i>
+              <div className="bg-zinc-900/40 border border-white/5 p-1.5 md:p-3 rounded-xl md:rounded-2xl text-center group hover:bg-zinc-800/60 transition-all">
+                <div className="w-6 h-6 md:w-8 md:h-8 bg-blue-500/10 rounded-lg flex items-center justify-center mx-auto mb-1 md:mb-2 group-hover:scale-110 transition-transform">
+                  <i className="fa-solid fa-clock text-blue-500 text-[10px] md:text-sm"></i>
                 </div>
-                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 md:mb-1">Phản hồi</p>
-                <p className="text-xs md:text-sm font-black text-white">24/7</p>
+                <p className="text-[8px] md:text-[10px] font-black text-white uppercase italic tracking-tighter">Support 24/7</p>
               </div>
               
-              <div className="bg-white/[0.02] border border-white/5 p-2 md:p-4 rounded-xl text-center">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
-                  <i className="fa-solid fa-users text-green-500 text-sm md:text-lg"></i>
+              <div className="bg-zinc-900/40 border border-white/5 p-1.5 md:p-3 rounded-xl md:rounded-2xl text-center group hover:bg-zinc-800/60 transition-all">
+                <div className="w-6 h-6 md:w-8 md:h-8 bg-green-500/10 rounded-lg flex items-center justify-center mx-auto mb-1 md:mb-2 group-hover:scale-110 transition-transform">
+                  <i className="fa-solid fa-users text-green-500 text-[10px] md:text-sm"></i>
                 </div>
-                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 md:mb-1">Người dùng</p>
-                <p className="text-xs md:text-sm font-black text-white">10k+</p>
+                <p className="text-[8px] md:text-[10px] font-black text-white uppercase italic tracking-tighter">10K+ Users</p>
               </div>
               
-              <div className="bg-white/[0.02] border border-white/5 p-2 md:p-4 rounded-xl text-center">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
-                  <i className="fa-solid fa-film text-purple-500 text-sm md:text-lg"></i>
+              <div className="bg-zinc-900/40 border border-white/5 p-1.5 md:p-3 rounded-xl md:rounded-2xl text-center group hover:bg-zinc-800/60 transition-all">
+                <div className="w-6 h-6 md:w-8 md:h-8 bg-purple-500/10 rounded-lg flex items-center justify-center mx-auto mb-1 md:mb-2 group-hover:scale-110 transition-transform">
+                  <i className="fa-solid fa-film text-purple-500 text-[10px] md:text-sm"></i>
                 </div>
-                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 md:mb-1">Phim</p>
-                <p className="text-xs md:text-sm font-black text-white">50k+</p>
+                <p className="text-[8px] md:text-[10px] font-black text-white uppercase italic tracking-tighter">50K+ Movies</p>
               </div>
             </div>
 
             {/* Social Links */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-2 md:gap-3">
               {[
-                { icon: 'facebook-f', label: 'Facebook', color: 'blue', link: '#' },
-                { icon: 'instagram', label: 'Instagram', color: 'pink', link: '#' },
-                { icon: 'youtube', label: 'Youtube', color: 'red', link: '#' },
-                { icon: 'tiktok', label: 'Tiktok', color: 'gray', link: '#' },
+                { icon: 'facebook-f', label: 'FB', color: 'blue', link: '#' },
+                { icon: 'instagram', label: 'IG', color: 'pink', link: '#' },
+                { icon: 'youtube', label: 'YT', color: 'red', link: '#' },
+                { icon: 'tiktok', label: 'TK', color: 'zinc', link: '#' },
               ].map((item, i) => (
-                <a key={i} href={item.link} className="flex items-center gap-2 group cursor-pointer bg-white/5 p-3 rounded-xl hover:bg-white/10 transition-all border border-white/5">
-                  <div className={`w-8 h-8 rounded-full bg-${item.color}-500/10 flex items-center justify-center group-hover:bg-${item.color}-600 group-hover:text-white transition-all text-${item.color}-500`}>
-                    <i className={`fa-brands fa-${item.icon} text-sm`}></i>
+                <a key={i} href={item.link} className="flex items-center justify-center gap-1 md:gap-2 group cursor-pointer bg-zinc-900/40 p-1.5 md:p-3 rounded-xl md:rounded-2xl hover:bg-zinc-800 transition-all border border-white/5">
+                  <div className="w-5 h-5 md:w-6 md:h-6 rounded-lg bg-zinc-800 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i className={`fa-brands fa-${item.icon} text-[10px] md:text-xs text-zinc-400 group-hover:text-white transition-colors`}></i>
                   </div>
-                  <span className="text-xs font-bold text-gray-300 group-hover:text-white transition-colors">{item.label}</span>
+                  <span className="hidden md:block text-[8px] md:text-[10px] font-black text-zinc-500 group-hover:text-white uppercase tracking-widest transition-colors">{item.label}</span>
                 </a>
               ))}
             </div>
@@ -200,12 +199,12 @@ const Contact = () => {
       </section>
 
       {/* Suggested Movies */}
-      <section className="container mx-auto pb-10">
-         <MoviesRow title="Gợi ý phim cho bạn" movies={sections.top5} layout="BACKDROP" />
+      <section className="container mx-auto px-6 pb-4 md:pb-10">
+         <MoviesRow title="Gợi ý phim cho bạn" movies={sections.top5} layout="BACKDROP" className="py-0" />
       </section>
 
       {/* Banner 1: Sales */}
-      <div className="w-full relative group overflow-hidden mb-16">
+      <div className="w-full relative group overflow-hidden mb-4 md:mb-16">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 mix-blend-overlay"></div>
           <img
             src={sales}
@@ -215,12 +214,12 @@ const Contact = () => {
       </div>
 
       {/* Featured Movies */}
-      <section className="container mx-auto pb-10">
-         <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" />
+      <section className="container mx-auto px-6 pb-4 md:pb-10">
+         <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" className="py-0" />
       </section>
       
       {/* Banner 2: Deal */}
-      <div className="w-full relative group overflow-hidden my-16">
+      <div className="w-full relative group overflow-hidden my-4 md:my-16">
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
         <img
             src={deal}
@@ -230,13 +229,13 @@ const Contact = () => {
       </div>
 
        {/* Upcoming Movies */}
-       <section className="container mx-auto pb-10">
-         <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" />
+       <section className="container mx-auto px-6 pb-4 md:pb-10">
+         <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" className="py-0" />
       </section>
 
       {/* Hot Movies */}
-      <section className="container mx-auto pb-20">
-         <MoviesRow title="PHIM HOT ĐẶC SẮC" movies={sections.hot} layout="POSTER" />
+      <section className="container mx-auto px-6 pb-20">
+         <MoviesRow title="PHIM HOT ĐẶC SẮC" movies={sections.hot} layout="POSTER" className="py-0" />
       </section>
     </div>
   );

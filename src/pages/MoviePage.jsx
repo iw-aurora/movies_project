@@ -44,7 +44,10 @@ const MoviePage = () => {
   const loadMovies = async (currentPage, genreId, isLoadMore = false) => {
     try {
       if (isLoadMore) setIsLoadingMore(true);
-      else setDataLoading(true);
+      else {
+        setMovies([]); // Clear movies to show skeleton
+        setDataLoading(true);
+      }
 
       // Fetch 3 pages at once to get 60 items (guarantees full rows for 2, 3, 4, 5, 6 columns)
       const pagesToFetch = [
@@ -57,7 +60,14 @@ const MoviePage = () => {
         genreId === 'all' ? fetchPopularMovies(p) : fetchByGenre(genreId, p)
       );
 
-      const results = await Promise.all(fetchBatch);
+      const promises = [Promise.all(fetchBatch)];
+
+      // Enforce minimum loading time of 250ms for better UX
+      if (!isLoadMore) {
+        promises.push(new Promise(resolve => setTimeout(resolve, 250)));
+      }
+
+      const [results] = await Promise.all(promises);
       const newMovies = results.flatMap(res => res.success ? res.data.results : []);
       
       if (results[0].success && results[0].data) {
@@ -107,7 +117,8 @@ const MoviePage = () => {
 
   const activeGenreName = GENRE_LIST.find(g => g.id === activeGenre)?.name || 'Tất cả';
 
-  if (isLoading && movies.length === 0) {
+  // Only show full page skeleton on initial load (when no data exists yet)
+  if (isLoading && !featuredMovie && movies.length === 0) {
     return (
       <main className="min-h-screen pb-20 bg-[#111112] text-white">
         <HeroSkeleton />
@@ -186,7 +197,7 @@ const MoviePage = () => {
       </section>
 
       {/* Filter & Listing */}
-      <section className="px-4 md:px-8 mt-6 md:mt-12 container mx-auto">
+      <section className="px-2 md:px-8 mt-6 md:mt-12 container mx-auto">
         <div className="flex flex-col gap-6 mb-12">
           {/* Title Section */}
           <div>
@@ -262,11 +273,13 @@ const MoviePage = () => {
 
         {/* Movie Grid */}
         {isLoading && movies.length === 0 ? (
-          <div className="h-96 flex items-center justify-center">
-             <i className="fa-solid fa-circle-notch fa-spin text-4xl text-blue-600"></i>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {[...Array(12)].map((_, i) => (
+              <MovieCardSkeleton key={`skeleton-${i}`} layout="POSTER" />
+            ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6">
             {movies.map((movie, index) => (
               <MoviesCard 
                 key={`${movie.id}-${index}`}

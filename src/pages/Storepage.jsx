@@ -301,25 +301,43 @@ const StorePage = () => {
   // Generate page numbers
   const getPageNumbers = () => {
     const pages = [];
-    const maxVisible = 7;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const maxVisible = isMobile ? 4 : 7;
     
     if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-      if (currentPage <= 4) {
-        for (let i = 1; i <= 5; i++) pages.push(i);
-        pages.push('...');
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 3) {
-        pages.push(1);
-        pages.push('...');
-        for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+      if (isMobile) {
+        // More direct mobile pagination: Current and 2 followers, plus ellipsis and last
+        if (currentPage <= totalPages - 3) {
+          pages.push(currentPage);
+          pages.push(currentPage + 1);
+          pages.push(currentPage + 2);
+          pages.push('...');
+          pages.push(totalPages);
+        } else {
+          // Near the end: show last 4 pages
+          for (let i = totalPages - 3; i <= totalPages; i++) {
+            if (i > 0) pages.push(i);
+          }
+        }
       } else {
-        pages.push(1);
-        pages.push('...');
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
-        pages.push('...');
-        pages.push(totalPages);
+        // Standard Desktop Logic
+        if (currentPage <= 4) {
+          for (let i = 1; i <= 5; i++) pages.push(i);
+          pages.push('...');
+          pages.push(totalPages);
+        } else if (currentPage >= totalPages - 3) {
+          pages.push(1);
+          pages.push('...');
+          for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+        } else {
+          pages.push(1);
+          pages.push('...');
+          for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+          pages.push('...');
+          pages.push(totalPages);
+        }
       }
     }
     return pages;
@@ -386,13 +404,13 @@ const StorePage = () => {
 
           <div className="container mx-auto px-6 -mt-10 relative z-30">
             {/* TOOLBAR */}
-            <div className="relative z-10 bg-[#0f0f0f]/80 backdrop-blur-2xl border border-white/5 rounded-3xl p-4 md:p-6 shadow-2xl flex flex-col md:flex-row items-center gap-6">
+            <div className="relative z-10 bg-[#161617]/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-3 md:p-4 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] flex flex-col md:flex-row items-center gap-4 md:gap-6">
               <div className="relative flex-grow w-full group" ref={searchContainerRef}>
-                <i className="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 z-10"></i>
+                <i className="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 z-10 group-focus-within:text-blue-500 transition-colors"></i>
                 <input
                   type="text"
                   placeholder="Tìm kiếm phim, series, diễn viên..."
-                  className="relative z-0 w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-14 pr-12 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-white"
+                  className="relative z-0 w-full bg-black/60 border border-white/5 rounded-xl py-3 pl-14 pr-12 text-sm focus:outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all font-medium text-white placeholder-zinc-500"
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
@@ -410,29 +428,29 @@ const StorePage = () => {
                             setIsTyping(false);
                             triggerSearch('');
                         }}
-                        className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors p-1 z-10"
+                        className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors p-1 z-10"
                     >
-                        <i className="fa-solid fa-xmark text-lg"></i>
+                        <i className="fa-solid fa-xmark text-base"></i>
                     </button>
                 )}
 
                 {/* SEARCH SUGGESTIONS DROPDOWN - SIMPLE TEXT ONLY */}
                 {showSuggestions && suggestions.length > 0 && searchQuery && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#151515] border border-white/10 rounded-xl shadow-2xl z-[120] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="absolute top-full left-0 right-0 mt-3 bg-[#1c1c1e] border border-white/10 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] z-[120] overflow-hidden">
                         <div className="py-1">
                              {suggestions.map((movie) => (
                                  <button 
                                     key={movie.id}
                                     onClick={() => handleSuggestionClick(movie)}
-                                    className="w-full text-left px-5 py-3 flex items-center justify-between hover:bg-white/5 cursor-pointer transition-colors group border-b border-white/5 last:border-0"
+                                    className="w-full text-left px-5 py-3 flex items-center justify-between hover:bg-white/5 cursor-pointer transition-colors group border-b border-white/[0.03] last:border-0"
                                  >
                                     <div className="flex items-center gap-3">
-                                        <i className="fa-solid fa-magnifying-glass text-gray-600 group-hover:text-blue-500 text-xs transition-colors"></i>
-                                        <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors truncate">
+                                        <i className="fa-solid fa-magnifying-glass text-zinc-600 group-hover:text-blue-500 text-xs transition-colors"></i>
+                                        <span className="text-sm font-medium text-zinc-400 group-hover:text-white transition-colors truncate">
                                             {movie.title || movie.name}
                                         </span>
                                     </div>
-                                    <span className="text-xs text-gray-600 font-bold group-hover:text-gray-400">
+                                    <span className="text-[10px] text-zinc-600 font-bold group-hover:text-zinc-400 tracking-tighter uppercase uppercase">
                                         {movie.release_date?.split('-')[0] || movie.first_air_date?.split('-')[0]}
                                     </span>
                                  </button>
@@ -442,55 +460,49 @@ const StorePage = () => {
                 )}
               </div>
 
-              <div className="flex items-center gap-4 w-full md:w-auto">
-                <div className="flex md:gap-2 bg-gradient-to-br from-black/50 to-black/30 rounded-xl p-1 border border-white/10 backdrop-blur-sm flex-grow md:flex-grow-0 shadow-lg">
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="flex bg-black/40 rounded-xl p-1 border border-white/5 backdrop-blur-sm flex-grow md:flex-grow-0">
                   {SORTS.map((s) => (
                     <button
                       key={s.value}
                       onClick={() => setSortBy(s.value)}
                       title={s.label}
-                      className={`group relative flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-300 min-w-[44px] ${
+                      className={`group relative flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all duration-300 min-w-[40px] flex-grow md:flex-grow-0 ${
                         sortBy === s.value
-                          ? "bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/40 scale-105"
-                          : "text-gray-400 hover:text-white hover:bg-white/10 hover:scale-105"
+                          ? "bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] scale-[1.02]"
+                          : "text-zinc-500 hover:text-white hover:bg-white/5"
                       }`}
                     >
-                      {sortBy === s.value && (
-                        <div className="absolute inset-0 rounded-lg bg-white/10 animate-pulse"></div>
-                      )}
-                      <i className={`fa-solid ${s.icon} text-sm relative z-10 transition-transform ${sortBy === s.value ? '' : 'group-hover:scale-110'}`}></i>
+                      <i className={`fa-solid ${s.icon} text-sm relative z-10`}></i>
                       <span className="hidden md:inline relative z-10 whitespace-nowrap">{s.label}</span>
                     </button>
                   ))}
                 </div>
 
-                <div className="relative z-40 w-fit">
+                <div className="relative z-40 w-fit" ref={genreDropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="group relative flex items-center justify-center gap-2 px-2.5 md:px-4 py-1.5 md:py-2.5 bg-gradient-to-br from-black/50 to-black/30 border border-white/10 rounded-lg text-xs font-bold backdrop-blur-sm shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white/10 hover:border-blue-500/30 min-h-[32px] md:min-h-[44px]"
+                    className={`group relative flex items-center justify-center gap-2 px-3 md:px-4 py-2 border rounded-lg text-[11px] font-black uppercase tracking-wider transition-all duration-300 min-h-[36px] md:min-h-[40px] ${
+                        selectedCategory !== 'all' 
+                        ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]" 
+                        : "bg-white/5 border-white/10 text-zinc-400 hover:text-white hover:bg-white/10"
+                    }`}
                   >
-                    <i className="fa-solid fa-sliders text-sm text-gray-400 group-hover:text-blue-400 transition-colors relative z-10"></i>
-                    <span className="hidden md:inline text-gray-300 group-hover:text-white transition-colors relative z-10 whitespace-nowrap">Thể loại</span>
+                    <i className="fa-solid fa-sliders text-sm relative z-10"></i>
+                    <span className="hidden md:inline relative z-10 whitespace-nowrap">Thể loại</span>
                     {selectedCategory !== 'all' && (
-                      <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-br from-blue-600 to-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shadow-lg shadow-blue-500/40 z-20">
-                        1
-                      </span>
+                      <div className="absolute -top-1.5 -right-1.5 bg-white text-blue-600 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black shadow-lg z-20">
+                        !
+                      </div>
                     )}
                     <i className={`fa-solid fa-chevron-down text-[10px] transition-transform ml-1 ${isDropdownOpen ? 'rotate-180' : ''}`}></i>
                   </button>
-
+ 
                   {/* Dropdown Menu - Direct Child (No Portal) */}
                   {isDropdownOpen && (
-                    <>
-                      {/* Backdrop to close when clicking outside */}
-                      <div 
-                        className="fixed inset-0 z-40" 
-                        onClick={() => setIsDropdownOpen(false)}
-                      ></div>
-
-                      <div 
-                        className="absolute top-full left-0 mt-2 w-64 bg-[#0f0f0f] border border-white/10 rounded-lg shadow-2xl z-[45] overflow-hidden animate-in fade-in zoom-in duration-200"
-                      >
+                    <div 
+                      className="absolute top-full right-0 mt-3 w-64 bg-[#1c1c1e] border border-white/10 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] z-[45] overflow-hidden animate-in fade-in zoom-in duration-200"
+                    >
                         <div className="p-1.5 max-h-[400px] overflow-y-auto custom-scrollbar">
                           {GENRE_LIST.map((cat) => (
                             <button
@@ -510,7 +522,6 @@ const StorePage = () => {
                           ))}
                         </div>
                       </div>
-                    </>
                   )}
                 </div>
               </div>
@@ -545,27 +556,38 @@ const StorePage = () => {
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="mt-16 mb-8 flex items-center justify-center">
-                    <div className="flex items-center gap-2 flex-wrap justify-center">
+                    <div className="flex items-center gap-1 md:gap-2 flex-nowrap md:flex-wrap justify-center px-2">
+                      {/* First Page - Mobile Only */}
+                      <button
+                        onClick={() => handlePageChange(1)}
+                        disabled={currentPage === 1}
+                        className="group w-8 h-8 md:hidden rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all shrink-0"
+                        title="Trang đầu"
+                      >
+                        <i className="fa-solid fa-angles-left text-[10px] text-gray-300 group-hover:text-blue-400"></i>
+                      </button>
+
+                      {/* Prev Page */}
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="group w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        className="group w-8 h-8 md:w-10 md:h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all shrink-0"
                         title="Trang trước"
                       >
-                        <i className="fa-solid fa-chevron-left text-sm text-gray-300 group-hover:text-blue-400 transition-colors"></i>
+                        <i className="fa-solid fa-chevron-left text-[10px] md:text-sm text-gray-300 group-hover:text-blue-400"></i>
                       </button>
 
                       {getPageNumbers().map((page, index) => (
                         page === '...' ? (
-                          <span key={`ellipsis-${index}`} className="px-2 text-gray-500">…</span>
+                          <span key={`ellipsis-${index}`} className="px-0.5 md:px-2 text-gray-600 text-[10px] md:text-sm shrink-0">…</span>
                         ) : (
                           <button
                             key={page}
                             onClick={() => handlePageChange(page)}
-                            className={`min-w-[40px] h-10 px-3 rounded-lg font-bold text-sm transition-all ${
+                            className={`min-w-[32px] md:min-w-[40px] h-8 md:h-10 px-1 md:px-3 rounded-lg font-bold text-[10px] md:text-sm transition-all shrink-0 ${
                               currentPage === page
-                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                                : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 text-gray-300 hover:text-white'
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 scale-105 z-10'
+                                : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 text-gray-400 hover:text-white'
                             }`}
                           >
                             {page}
@@ -573,13 +595,24 @@ const StorePage = () => {
                         )
                       ))}
 
+                      {/* Next Page */}
                       <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="group w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        className="group w-8 h-8 md:w-10 md:h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all shrink-0"
                         title="Trang sau"
                       >
-                        <i className="fa-solid fa-chevron-right text-sm text-gray-300 group-hover:text-blue-400 transition-colors"></i>
+                        <i className="fa-solid fa-chevron-right text-[10px] md:text-sm text-gray-300 group-hover:text-blue-400"></i>
+                      </button>
+
+                      {/* Last Page - Mobile Only */}
+                      <button
+                        onClick={() => handlePageChange(totalPages)}
+                        disabled={currentPage === totalPages}
+                        className="group w-8 h-8 md:hidden rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all shrink-0"
+                        title="Trang cuối"
+                      >
+                        <i className="fa-solid fa-angles-right text-[10px] text-gray-300 group-hover:text-blue-400"></i>
                       </button>
                     </div>
                   </div>

@@ -2,7 +2,7 @@ import { getImageUrl } from "../../lib/utils/image";
 
 const FeatureRow = ({ title, movies }) => {
   return (
-    <div className="py-4">
+    <div className="py-1 md:py-4">
       <div className="flex items-center gap-3 mb-10">
         <span className="w-1.5 h-8 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.6)]"></span>
         <h2 className="text-2xl font-black tracking-tight text-white uppercase italic">{title}</h2>

@@ -418,30 +418,30 @@ const MovieInfo = ({ movie }) => {
               {movie.overview}
             </p>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-1 md:gap-6 pt-1 md:pt-4">
-               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
-                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
-                    <Clock size={7} className="md:w-3 md:h-3" /> Duration
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 pt-2 md:pt-4">
+               <div className="px-2 py-1.5 md:px-4 md:py-2 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
+                  <div className="text-[8px] md:text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 flex items-center gap-1.5">
+                    <Clock size={10} className="md:w-3 md:h-3" /> Thời lượng
                   </div>
-                  <div className="text-white text-[8px] md:text-base font-black truncate">{movie.runtime || movie.episode_run_time?.[0] || 'N/A'} min</div>
+                  <div className="text-white text-xs md:text-sm font-bold truncate">{movie.runtime || movie.episode_run_time?.[0] || 'N/A'} phút</div>
                </div>
-               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
-                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
-                    <Star size={7} className="md:w-3 md:h-3" /> Rating
+               <div className="px-2 py-1.5 md:px-4 md:py-2 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
+                  <div className="text-[8px] md:text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 flex items-center gap-1.5">
+                    <Star size={10} className="md:w-3 md:h-3" /> Đánh giá
                   </div>
-                  <div className="text-white text-[8px] md:text-base font-black truncate">{statsSummary.total} Reviews</div>
+                  <div className="text-white text-xs md:text-sm font-bold truncate">{statsSummary.total} lượt</div>
                </div>
-               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
-                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
-                    <Globe size={7} className="md:w-3 md:h-3" /> Origin
+               <div className="px-2 py-1.5 md:px-4 md:py-2 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
+                  <div className="text-[8px] md:text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 flex items-center gap-1.5">
+                    <Globe size={10} className="md:w-3 md:h-3" /> Quốc gia
                   </div>
-                  <div className="text-white text-[8px] md:text-base font-black truncate">{movie.production_countries?.[0]?.name || 'N/A'}</div>
+                  <div className="text-white text-xs md:text-sm font-bold truncate">{movie.production_countries?.[0]?.name || 'N/A'}</div>
                </div>
-               <div className="p-1 md:p-4 bg-white/5 rounded-md md:rounded-2xl border border-white/5">
-                  <div className="text-[5px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
-                    <Star size={7} className="md:w-3 md:h-3" /> Genre
+               <div className="px-2 py-1.5 md:px-4 md:py-2 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
+                  <div className="text-[8px] md:text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 flex items-center gap-1.5">
+                    <Layers size={10} className="md:w-3 md:h-3" /> Thể loại
                   </div>
-                  <div className="text-white text-[8px] md:text-base font-black truncate">{movie.genres?.[0]?.name || 'Movie'}</div>
+                  <div className="text-white text-xs md:text-sm font-bold truncate">{movie.genres?.[0]?.name || 'Phim lẻ'}</div>
                </div>
             </div>
           </div>
@@ -490,10 +490,12 @@ const MovieInfo = ({ movie }) => {
          {/* 2. Comment Input */}
          <div className="flex gap-6">
              <div className="hidden md:block w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0 border border-white/10">
-                {user ? (
+                {user?.photoURL ? (
                     <img src={user.photoURL} alt="Me" className="w-full h-full object-cover" />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-500"><MessageSquare size={20} /></div>
+                    <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center text-lg font-bold text-white">
+                        {(user?.displayName || user?.email || 'U')[0].toUpperCase()}
+                    </div>
                 )}
              </div>
              

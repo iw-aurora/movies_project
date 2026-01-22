@@ -74,7 +74,7 @@ const ProfileHero = ({ onEditProfileClick }) => {
   }
 
   return (
-    <div className="relative w-full h-[280px] md:h-[350px] rounded-3xl overflow-hidden mb-8 group">
+    <div className="relative w-full h-[220px] md:h-[350px] rounded-3xl overflow-hidden mb-8 group">
       {/* Background Cover */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-black/80">
         <img

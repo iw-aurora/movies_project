@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 
 import MovieCard from "./MoviesCard";
 
-const MoviesRow = ({ title, movies = [], layout = "POSTER", scrollable = true }) => {
+const MoviesRow = ({ title, movies = [], layout = "POSTER", scrollable = true, className = "py-4" }) => {
   const rowRef = useRef(null);
 
   const scroll = (direction) => {
@@ -37,8 +37,8 @@ const MoviesRow = ({ title, movies = [], layout = "POSTER", scrollable = true })
   }, [scrollable]);
 
   return (
-    <section className="py-4">
-      <div className="flex items-center justify-between mb-6 px-4">
+    <section className={className}>
+      <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-black tracking-tight text-white flex items-center gap-3">
           <span className="w-1.5 h-8 bg-blue-600 rounded-full"></span>
           {title}
@@ -62,14 +62,14 @@ const MoviesRow = ({ title, movies = [], layout = "POSTER", scrollable = true })
       </div>
 
       {!scrollable ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-6">
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} layout={layout} />
           ))}
         </div>
       ) : (
         <div className="relative">
-          <div ref={rowRef} className="flex gap-6 pb-10 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
+          <div ref={rowRef} className="flex gap-3 md:gap-6 pb-10 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
             {movies.map((movie) => (
               <div key={movie.id} className={`snap-center ${layout === "POSTER" ? "min-w-[200px]" : "min-w-[340px]"}`}>
                 <MovieCard movie={movie} layout={layout} />

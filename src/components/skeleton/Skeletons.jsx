@@ -54,7 +54,7 @@ export const FeatureRowSkeleton = () => {
 
 export const HeroSkeleton = () => {
   return (
-    <div className="relative h-[85vh] w-full animate-shimmer overflow-hidden">
+    <div className="relative h-[50vh] md:h-[95vh] w-full animate-shimmer overflow-hidden">
       <div className="container mx-auto h-full flex items-center">
         <div className="max-w-2xl space-y-6">
           <div className="flex gap-4">
