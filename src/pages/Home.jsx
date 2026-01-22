@@ -47,37 +47,37 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#111112] text-zinc-100 overflow-x-hidden">
-      <main>
+      <main className="space-y-4 pb-10">
         <Hero movie={heroMovie} />
 
-        <div className="space-y-3 md:space-y-8 pb-[10px] md:pb-20 pt-10 px-2 md:px-0">
-          <section className="container mx-auto">
-            <MoviesRow title="🔥 Phim hot tuần này" movies={sections.hot} layout="BACKDROP" />
+        <div className="space-y-4 pt-4">
+          <section className="container mx-auto px-4 md:px-6">
+            <MoviesRow title="🔥 Phim hot tuần này" movies={sections.hot} layout="BACKDROP" className="py-2" />
           </section>
 
-          <div className="w-full relative group overflow-hidden -mx-2 md:mx-0">
+          <div className="w-full relative group overflow-hidden mb-10">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 mix-blend-overlay"></div>
             <img
               src={sales}
               alt="Sales banner"
-              className="w-full object-cover max-h-[400px] transition-transform duration-700 group-hover:scale-105"
+              className="w-full object-cover max-h-[350px] transition-transform duration-700 group-hover:scale-105"
             />
           </div>
 
-          <section className="container mx-auto">
-            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="POSTER" scrollable={false} />
-            <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" />
-            <MoviesRow title="Hành tinh xanh" movies={sections.nature} layout="BACKDROP" />
+          <section className="container mx-auto px-4 md:px-6 space-y-4">
+            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="POSTER" scrollable={false} className="py-0" />
+            <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" className="py-0" />
+            <MoviesRow title="Hành tinh xanh" movies={sections.nature} layout="BACKDROP" className="py-0" />
           </section>
 
-          <section className="container mx-auto">
-            <MoviesRow title="Phim Hài truyền hình" movies={sections.comedy} layout="BACKDROP" />
-            <MoviesRow title="Điện ảnh Hàn Quốc" movies={sections.korean} layout="BACKDROP" />
-            <MoviesRow title="Thế giới Anime" movies={sections.anime} layout="POSTER" />
+          <section className="container mx-auto px-4 md:px-6 space-y-4">
+            <MoviesRow title="Phim Hài truyền hình" movies={sections.comedy} layout="BACKDROP" className="py-0" />
+            <MoviesRow title="Điện ảnh Hàn Quốc" movies={sections.korean} layout="BACKDROP" className="py-0" />
+            <MoviesRow title="Thế giới Anime" movies={sections.anime} layout="POSTER" className="py-0" />
           </section>
 
-          <section className="bg-zinc-900/40 py-2 md:py-16">
-            <div className="container mx-auto">
+          <section className="bg-zinc-900/40 py-10">
+            <div className="container mx-auto px-4 md:px-6">
               <FeatureRow title="TOP PHIM ĐẶC SẮC" movies={sections.topSpecial} />
             </div>
           </section>
@@ -87,13 +87,13 @@ const Home = () => {
             <img
               src={deal}
               alt="Deal banner"
-              className="w-full object-cover max-h-[500px] transition-transform duration-1000 group-hover:scale-110"
+              className="w-full object-cover max-h-[450px] transition-transform duration-1000 group-hover:scale-110"
             />
           </div>
 
-          <section className="container mx-auto">
+          <section className="container mx-auto px-4 md:px-6 space-y-4">
             <Explore />
-            <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" />
+            <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" className="py-0" />
           </section>
         </div>
       </main>

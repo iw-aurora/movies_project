@@ -37,28 +37,28 @@ const Introduce = () => {
 
   return (
     <div className="min-h-screen bg-[#111112] text-zinc-100">
-      <main>
-        <section className="container mx-auto px-6 pt-32 mb-[10px]">
+      <main className="space-y-4 pb-10">
+        <section className="container mx-auto px-6 pt-32">
           <div className="flex items-center gap-3 mb-6">
             <span className="w-2 h-10 md:h-14 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.6)]"></span>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase italic">Về MoonPlay</h1>
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase italic text-white">Về MoonPlay</h1>
           </div>
 
-          <p className="text-zinc-400 text-xl font-medium leading-relaxed text-justify max-w-4xl">
+          <p className="text-zinc-400 text-lg md:text-xl font-medium leading-relaxed text-justify max-w-4xl">
             Chào mừng bạn đến với <span className="text-white font-bold italic">MoonPlay</span> – nơi bạn có thể khám phá thế giới điện ảnh đầy cảm
             xúc và chiều sâu. Từ những bộ phim bom tấn cho đến các tác phẩm nghệ thuật độc lập, MoonPlay mang đến trải nghiệm xem phim tinh tế, trực
             quan và dễ tiếp cận cho mọi đối tượng yêu điện ảnh.
           </p>
         </section>
 
-        <div className="space-y-[10px] pb-20">
+        <div className="space-y-4">
           <section className="container mx-auto px-6">
-            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="BACKDROP" scrollable={false} className="py-0" />
+            <MoviesRow title="Top 5 phim hôm nay" movies={sections.top5} layout="BACKDROP" scrollable={false} className="py-2" />
           </section>
 
           <section className="container mx-auto px-6">
-            <div className="bg-zinc-900/50 p-10 rounded-3xl border border-white/5 backdrop-blur-sm">
-              <p className="text-zinc-300 text-lg font-medium leading-relaxed text-justify">
+            <div className="bg-zinc-900/50 p-6 md:p-10 rounded-3xl border border-white/5 backdrop-blur-sm">
+              <p className="text-zinc-300 text-base md:text-xl font-medium leading-relaxed text-left md:text-justify max-w-4xl">
                 MoonPlay là nền tảng xem phim trực tuyến được thiết kế tối giản nhưng hiệu quả, giúp người dùng dễ dàng tìm kiếm và tận hưởng những bộ
                 phim yêu thích. Với hệ thống phân loại rõ ràng, giao diện thân thiện và khả năng gợi ý thông minh, MoonPlay mang đến trải nghiệm xem
                 phim mượt mượt và liền mạch.
@@ -67,12 +67,12 @@ const Introduce = () => {
           </section>
 
           <section className="container mx-auto px-6">
-            <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" className="py-0" />
+            <MoviesRow title="Phim thuê đặc sắc" movies={sections.featured} layout="POSTER" className="py-2" />
           </section>
 
           <section className="container mx-auto px-6">
-            <div className="bg-blue-600/10 p-10 rounded-3xl border border-blue-500/20 backdrop-blur-sm">
-              <p className="text-zinc-300 text-lg font-medium leading-relaxed text-justify">
+            <div className="bg-blue-600/10 p-6 md:p-10 rounded-3xl border border-blue-500/20 backdrop-blur-sm">
+              <p className="text-zinc-300 text-base md:text-xl font-medium leading-relaxed text-left md:text-justify max-w-4xl">
                 Không chỉ tập trung vào những tác phẩm nổi tiếng, MoonPlay còn giới thiệu các bộ phim độc đáo đến từ nhiều quốc gia và nền văn hoá
                 khác nhau. Bạn có thể khám phá phim nghệ thuật, phim tài liệu, phim độc lập và những câu chuyện điện ảnh mang đậm dấu ấn cá nhân của
                 các nhà làm phim.
@@ -80,21 +80,21 @@ const Introduce = () => {
             </div>
           </section>
 
-          <div className="w-full relative group overflow-hidden py-[10px] md:py-10">
+          <div className="w-full relative group overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-[#111112] via-transparent to-transparent"></div>
             <img
               src={deal}
               alt="Deal banner"
-              className="w-full object-cover max-h-[500px] transition-transform duration-1000 group-hover:scale-110"
+              className="w-full object-cover max-h-[450px] transition-transform duration-1000 group-hover:scale-110"
             />
           </div>
 
           <section className="container mx-auto px-6">
-            <Explore className="py-0" />
+            <Explore className="py-2" />
           </section>
 
           <section className="container mx-auto px-6">
-            <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" className="py-0" />
+            <MoviesRow title="PHIM SẮP CHIẾU" movies={sections.upcoming} layout="BACKDROP" className="py-2" />
           </section>
         </div>
       </main>

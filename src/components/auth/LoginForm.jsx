@@ -49,8 +49,8 @@ const LoginForm = ({ onLogin, loading, onGoogleSignIn, googleLoading, error, cle
 
         <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
           {/* email */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Email Address</label>
+          <div className="flex flex-col gap-2.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Email Address</label>
             <input
               type="email"
               value={email}
@@ -61,8 +61,8 @@ const LoginForm = ({ onLogin, loading, onGoogleSignIn, googleLoading, error, cle
           </div>
 
           {/* password */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Password</label>
+          <div className="flex flex-col gap-2.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Password</label>
             <div className="relative group">
               <input
                 type={showPassword ? 'text' : 'password'}

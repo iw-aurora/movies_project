@@ -461,16 +461,16 @@ const StorePage = () => {
               </div>
 
               <div className="flex items-center gap-3 w-full md:w-auto">
-                <div className="flex bg-black/40 rounded-xl p-1 border border-white/5 backdrop-blur-sm flex-grow md:flex-grow-0">
+                <div className="flex items-center gap-1.5 md:gap-2 flex-grow md:flex-grow-0">
                   {SORTS.map((s) => (
                     <button
                       key={s.value}
                       onClick={() => setSortBy(s.value)}
                       title={s.label}
-                      className={`group relative flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all duration-300 min-w-[40px] flex-grow md:flex-grow-0 ${
+                      className={`group relative flex items-center justify-center gap-2 px-3 md:px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 min-w-[40px] flex-grow md:flex-grow-0 border ${
                         sortBy === s.value
-                          ? "bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] scale-[1.02]"
-                          : "text-zinc-500 hover:text-white hover:bg-white/5"
+                          ? "bg-blue-600 border-blue-500 text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)] scale-[1.02] z-10"
+                          : "bg-white/5 border-white/5 text-zinc-500 hover:text-zinc-200 hover:bg-white/10 hover:border-white/10"
                       }`}
                     >
                       <i className={`fa-solid ${s.icon} text-sm relative z-10`}></i>

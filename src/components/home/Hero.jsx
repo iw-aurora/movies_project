@@ -28,18 +28,18 @@ const Hero = ({ movie }) => {
             </span>
           </div>
 
-          <h1 className="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase tracking-tighter leading-tight drop-shadow-2xl text-white">
+          <h1 className="text-2xl md:text-5xl lg:text-7xl font-black mb-4 uppercase tracking-tighter leading-tight drop-shadow-2xl text-white">
             {movie.title || movie.name}
           </h1>
 
-          <p className="text-sm md:text-lg text-gray-300 line-clamp-2 md:line-clamp-3 drop-shadow-md font-medium max-w-xl leading-relaxed">{movie.overview}</p>
+          <p className="text-[12px] md:text-lg text-gray-300 line-clamp-2 md:line-clamp-3 drop-shadow-md font-medium max-w-xl leading-relaxed">{movie.overview}</p>
 
           <div className="flex items-center gap-3 md:gap-4 pt-2 md:pt-4">
-            <Link to={`/watch/${movie.id}`} className="bg-white text-black px-4 py-2 md:px-8 md:py-4 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-2 md:gap-3 shadow-2xl active:scale-95 text-xs md:text-lg">
+            <Link to={`/watch/${movie.id}`} className="bg-white text-black px-4 py-2 md:px-8 md:py-4 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-2 md:gap-3 shadow-2xl active:scale-[0.98] transition-all text-[10px] md:text-lg">
               <i className="fa-solid fa-play"></i>
               Xem ngay
             </Link>
-            <Link to={`/title/${movie.id}`} className="bg-white/10 backdrop-blur-md text-white px-4 py-2 md:px-8 md:py-4 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-2 md:gap-3 border border-white/10 active:scale-95 text-xs md:text-lg">
+            <Link to={`/title/${movie.id}`} className="bg-white/10 backdrop-blur-md text-white px-4 py-2 md:px-8 md:py-4 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-2 md:gap-3 border border-white/10 active:scale-[0.98] transition-all text-[10px] md:text-lg">
               <i className="fa-solid fa-circle-info"></i>
               Chi tiết
             </Link>
