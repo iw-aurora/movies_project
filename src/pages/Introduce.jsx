@@ -44,7 +44,7 @@ const Introduce = () => {
             <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase italic text-white">Về MoonPlay</h1>
           </div>
 
-          <p className="text-zinc-400 text-lg md:text-xl font-medium leading-relaxed text-justify max-w-4xl">
+          <p className="text-zinc-400 text-lg md:text-xl font-medium leading-relaxed text-justify w-full">
             Chào mừng bạn đến với <span className="text-white font-bold italic">MoonPlay</span> – nơi bạn có thể khám phá thế giới điện ảnh đầy cảm
             xúc và chiều sâu. Từ những bộ phim bom tấn cho đến các tác phẩm nghệ thuật độc lập, MoonPlay mang đến trải nghiệm xem phim tinh tế, trực
             quan và dễ tiếp cận cho mọi đối tượng yêu điện ảnh.
@@ -58,7 +58,7 @@ const Introduce = () => {
 
           <section className="container mx-auto px-6">
             <div className="bg-zinc-900/50 p-6 md:p-10 rounded-3xl border border-white/5 backdrop-blur-sm">
-              <p className="text-zinc-300 text-base md:text-xl font-medium leading-relaxed text-left md:text-justify max-w-4xl">
+              <p className="text-zinc-300 text-base md:text-xl font-medium leading-relaxed text-left md:text-justify w-full">
                 MoonPlay là nền tảng xem phim trực tuyến được thiết kế tối giản nhưng hiệu quả, giúp người dùng dễ dàng tìm kiếm và tận hưởng những bộ
                 phim yêu thích. Với hệ thống phân loại rõ ràng, giao diện thân thiện và khả năng gợi ý thông minh, MoonPlay mang đến trải nghiệm xem
                 phim mượt mượt và liền mạch.
@@ -72,7 +72,7 @@ const Introduce = () => {
 
           <section className="container mx-auto px-6">
             <div className="bg-blue-600/10 p-6 md:p-10 rounded-3xl border border-blue-500/20 backdrop-blur-sm">
-              <p className="text-zinc-300 text-base md:text-xl font-medium leading-relaxed text-left md:text-justify max-w-4xl">
+              <p className="text-zinc-300 text-base md:text-xl font-medium leading-relaxed text-left md:text-justify w-full">
                 Không chỉ tập trung vào những tác phẩm nổi tiếng, MoonPlay còn giới thiệu các bộ phim độc đáo đến từ nhiều quốc gia và nền văn hoá
                 khác nhau. Bạn có thể khám phá phim nghệ thuật, phim tài liệu, phim độc lập và những câu chuyện điện ảnh mang đậm dấu ấn cá nhân của
                 các nhà làm phim.

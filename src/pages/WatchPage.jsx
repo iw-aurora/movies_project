@@ -89,17 +89,16 @@ const WatchPage = () => {
 
       <main className="flex-1 px-2 md:px-12 py-4 md:py-8 container mx-auto w-full">
         {/* Breadcrumbs */}
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-[9px] text-white/40 mb-6 font-semibold uppercase tracking-[0.2em]">
+        <nav className="flex items-center gap-1 md:gap-2 text-[7px] md:text-sm text-white/40 mb-6 font-semibold uppercase tracking-widest md:tracking-[0.2em]">
           <Link to="/" className="hover:text-white transition-colors">
             Trang chủ
           </Link>
-          <ChevronRight size={8} className="text-white/20" />
+          <ChevronRight className="w-2 h-2 md:w-4 md:h-4 text-white/20" />
           <Link to="/store" className="hover:text-white transition-colors">
             Khám phá
           </Link>
-          <ChevronRight size={8} className="text-white/20" />
-          <span className="text-white/60 font-bold truncate max-w-[200px] md:max-w-[400px]">{movie.title || movie.name}</span>
+          <ChevronRight className="w-2 h-2 md:w-4 md:h-4 text-white/20" />
+          <span className="text-white/60 font-bold truncate max-w-[150px] md:max-w-[400px]">{movie.title || movie.name}</span>
         </nav>
 
         {/* Content Layout */}
