@@ -101,7 +101,7 @@ const Contact = () => {
       {/* Introduction Section */}
       <section className="container mx-auto px-4 md:px-6 mb-8">
         <div className="animate-fade-in text-center space-y-2">
-          <h1 className="text-3xl md:text-6xl font-black uppercase italic tracking-tighter text-gradient leading-none">
+          <h1 className="text-3xl md:text-6xl font-extrabold uppercase tracking-tight text-gradient leading-none">
             MoonPlay
           </h1>
           <p className="text-zinc-500 max-w-2xl mx-auto leading-relaxed text-[12px] md:text-base font-medium">

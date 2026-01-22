@@ -39,7 +39,7 @@ const MoviesRow = ({ title, movies = [], layout = "POSTER", scrollable = true, c
   return (
     <section className={className}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-3">
+        <h2 className="text-xl md:text-2xl font-extrabold text-white flex items-center gap-3">
           <span className="w-1.5 h-8 bg-blue-600 rounded-full"></span>
           {title}
         </h2>

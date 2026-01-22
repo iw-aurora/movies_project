@@ -41,7 +41,7 @@ const Introduce = () => {
         <section className="container mx-auto px-6 pt-32">
           <div className="flex items-center gap-3 mb-6">
             <span className="w-2 h-10 md:h-14 bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.6)]"></span>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase italic text-white">Về MoonPlay</h1>
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight uppercase text-white">Về MoonPlay</h1>
           </div>
 
           <p className="text-zinc-400 text-lg md:text-xl font-medium leading-relaxed text-justify w-full">

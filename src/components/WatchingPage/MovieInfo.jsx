@@ -407,7 +407,7 @@ const MovieInfo = ({ movie }) => {
         <div className="flex flex-col md:flex-row gap-4 md:gap-8">
           <div className="flex-1 space-y-3 md:space-y-6">
             <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
-              <h1 className="text-[10px] md:text-3xl font-black text-white italic tracking-tighter uppercase line-clamp-2">{movie.title || movie.name}</h1>
+              <h1 className="text-[10px] md:text-3xl font-extrabold text-white tracking-tight uppercase line-clamp-2">{movie.title || movie.name}</h1>
               <div className="flex items-center gap-0.5 px-1 py-0.5 md:px-3 md:py-1 bg-blue-600/20 text-blue-500 rounded-md text-[7px] md:text-xs font-black w-fit">
                 <Star size={7} fill="currentColor" />
                 {statsSummary.average}
@@ -452,7 +452,7 @@ const MovieInfo = ({ movie }) => {
       <div className="max-w-5xl mx-auto space-y-10">
          
          <div className="flex items-center gap-2 md:gap-4 mb-2 pb-2 md:pb-4 border-b border-white/5">
-             <h2 className="text-xl md:text-3xl font-black text-white uppercase italic tracking-tighter">Bình luận & Đánh giá</h2>
+             <h2 className="text-xl md:text-3xl font-extrabold text-white uppercase tracking-normal">Bình luận & Đánh giá</h2>
              <span className="text-xs md:text-sm text-gray-500 font-medium">(Audience Reviews)</span>
          </div>
 
@@ -461,7 +461,7 @@ const MovieInfo = ({ movie }) => {
          <div className="bg-[#1a1a1a] rounded-[2rem] p-4 md:p-8 flex flex-col md:flex-row gap-4 md:gap-12 item-center shadow-2xl border border-white/5">
              {/* Left: Big Score */}
              <div className="flex flex-col items-center justify-center min-w-[140px] text-center">
-                 <div className="text-4xl md:text-6xl leading-none font-black text-white mb-2 tracking-tighter shadow-blue-500/50 drop-shadow-2xl">{statsSummary.average}</div>
+                 <div className="text-4xl md:text-6xl leading-none font-extrabold text-white mb-2 tracking-tight shadow-blue-500/50 drop-shadow-2xl">{statsSummary.average}</div>
                  <div className="flex gap-1 mb-2">
                     {[...Array(5)].map((_, i) => (
                         <Star key={i} size={16} fill={i < Math.round(Number(statsSummary.average)) ? "#ef4444" : "none"} className={i < Math.round(Number(statsSummary.average)) ? "text-red-500" : "text-gray-700"} />

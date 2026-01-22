@@ -50,7 +50,7 @@ const Info = ({ movie }) => {
               <span className="text-blue-400 font-black text-[10px] md:text-lg">{year}</span>
             </div>
 
-            <h1 className="text-base md:text-5xl lg:text-5xl font-black text-white tracking-tighter uppercase italic drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-tight">
+            <h1 className="text-base md:text-5xl lg:text-5xl font-extrabold text-white tracking-tight uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-tight">
               {vietnameseTitle}
             </h1>
 

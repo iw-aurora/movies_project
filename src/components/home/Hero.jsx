@@ -28,7 +28,7 @@ const Hero = ({ movie }) => {
             </span>
           </div>
 
-          <h1 className="text-2xl md:text-5xl lg:text-7xl font-black mb-4 uppercase tracking-tighter leading-tight drop-shadow-2xl text-white">
+          <h1 className="text-2xl md:text-5xl lg:text-7xl font-extrabold mb-4 uppercase tracking-tight leading-tight drop-shadow-2xl text-white">
             {movie.title || movie.name}
           </h1>
 
